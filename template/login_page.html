@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" href="../static/login_page.css" />
+    </head>
+    <body>
+        <script src="../static/login_page.js"></script>
+        <div id = 'top'>ENJOY YOUR PHOTO BOOK</div>
+        <div id="container">
+            <div id = 'sidebar_container'>
+                <div class="sidebar_btn_container"><button class='sidebar_btn' disabled>DM</button></div>
+                <div class="sidebar_btn_container"><button class='sidebar_btn' disabled>사진보기</button></div>
+                <div class="sidebar_btn_container"><button class='sidebar_btn' disabled>Upload</button></div>
+                <div id ='connecting_user_container'>
+                    <div class="userlist">connecting</div>
+                    <div class="userlist">user1</div>
+                    <div class="userlist">user1</div>
+                    <div class="userlist">user1</div>
+                    <div class="userlist">user1</div>
+                </div>
+            </div>
+            <div id = 'main_login_container'>
+                <div id="camera_img">
+                    <img src="../assets/camera.png">
+                </div>
+                <div id="login_container">
+                    <div id="login_text">로그인</div>
+                    <form action="http://localhost:5000/login" , method="POST">
+                        <input type="text" placeholder="이메일" name ='email' id="email" class="text_area">
+                        <input type="text" placeholder="비밀번호" name="password" id="password" class="text_area">
+                        <div class="text_area">
+                            <p id="error_text">* 올바른 아이디 또는 비밀번호를 입력해주세요</p>
+                        </div>
+                        <input type="submit" value="확인" id="login_btn" class='text_area' disabled>
+                    </form>
+                    <div class="text_area" id="sign_up_container">
+                        <button id="sign_up_btn" onClick="location.href='signup_page.html'">회원가입</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+    </body>
+</html>
