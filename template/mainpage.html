@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" href="../static/mainpage.css" />
+    </head>
+    <body>
+        <!-- <script src="../static/login_page.js"></script> -->
+        <div id = 'top'>ENJOY YOUR PHOTO BOOK</div>
+        <div id="container">
+            <div id = 'sidebar_container'>
+                <div class="sidebar_btn_container"><button class='sidebar_btn' disabled>DM</button></div>
+                <div class="sidebar_btn_container"><button class='sidebar_btn' disabled>사진보기</button></div>
+                <div class="sidebar_btn_container"><button class='sidebar_btn' disabled>Upload</button></div>
+                <div id ='connecting_user_container'>
+                    <div class="userlist">connecting</div>
+                    <div class="userlist">user1</div>
+                    <div class="userlist">user1</div>
+                    <div class="userlist">user1</div>
+                    <div class="userlist">user1</div>
+                </div>
+            </div>
+            <div id = 'main_login_container'>
+                <div id="camera_img_container">
+                    <img id = 'camera_img' src="../assets/camera.png">
+                </div>
+                <div id="keyword_container">
+                    <form action="search_keyword" method="POST">
+                        <input type="text" id="keyword" name="keyword" placeholder="검색">
+                        <button id="search_btn"><img id='search_img' src="../assets/search.png"></button>
+                    </form>
+                </div>
+                <div id="item_container">
+                    <div class ='item'>
+                        <img class='photo_img' src="../assets/dummy_img.webp">
+                        <p class="author">woo</p>
+                        <p class="keyword">#키워드 #키워드</p>
+                        <p class="description">어쩌구저쩌구 설명~~~~</p>
+                    </div>
+                    <div class ='item'>
+                        <img class='photo_img' src="../assets/dummy_img.webp">
+                        <p class="author">woo</p>
+                        <p class="keyword">#키워드</p>
+                        <p class="description">어쩌구저쩌구 설명~~~~</p>
+                    </div>
+                    <div class ='item'>
+                        <img class='photo_img' src="../assets/dummy_img.webp">
+                        <p class="author">woo</p>
+                        <p class="keyword">#키워드</p>
+                        <p class="description">어쩌구저쩌구 설명~~~~</p>
+                    </div>
+                    <div class ='item'>
+                        <img class='photo_img' src="../assets/dummy_img.webp">
+                        <p class="author">woo</p>
+                        <p class="keyword">#키워드</p>
+                        <p class="description">어쩌구저쩌구 설명~~~~</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+    </body>
+</html>
