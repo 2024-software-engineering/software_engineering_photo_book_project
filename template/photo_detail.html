@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" href="../static/photo_detail.css" />
+    </head>
+    <body>
+        <!-- <script src="../static/login_page.js"></script> -->
+        <div id = 'top'>ENJOY YOUR PHOTO BOOK</div>
+        <div id="camera_img_container">
+            <img id = 'camera_img' src="../assets/camera.png">
+        </div>
+        <div id="container">
+            <div id = 'topbar_container'>
+                <div class="topbar_btn_container"><button class='topbar_btn' disabled>Photo</button></div>
+                <div class="topbar_btn_container"><button class='topbar_btn' disabled>Upload</button></div>
+                <div class="topbar_btn_container"><button class='topbar_btn' disabled>DM</button></div>
+                <div id="keyword_container">
+                    <form action="search_keyword" method="POST">
+                        <input type="text" id="keyword" name="keyword" placeholder="검색">
+                        <button id="search_btn"><img id='search_img' src="../assets/search.png"></button>
+                    </form>
+                </div>
+            </div>
+            <div id="photo_container">
+                <div class ='photo'>
+                    <img class='photo_img' src="../assets/dummy_img.webp">
+                </div>
+            </div>
+            <div id = 'photo_detail_container'>
+                <div class="photo_detail">
+                    <p class="author">woo</p>
+                    <button class='item_btn' disabled>수정</button>
+                    <p class="keyword">#키워드 #키워드</p>
+                    <p class="description">어쩌구저쩌구 설명~~~~</p>
+                </div>
+            </div>
+            <div id="msg_container">
+                <div class="msg_send_container">
+                    <form action="msg_send" method="POST">
+                        <input type="text" id="msg" name="msg" placeholder="send message">
+                        <button id="send_btn" disabled>SEND</button>
+                    </form>
+                </div>
+                <div class="user_msg_container">
+                    <p class="user_name">username</p>
+                    <p class="direct_msg">사진 너무 좋아요 ~</p>
+                    <button class='reply_btn' disabled>응답</button>
+                    <button class='delete_btn' disabled>삭제</button>
+                </div>
+                <div class="user_msg_container">
+                    <p class="user_name">username</p>
+                    <p class="direct_msg">사진 너무 좋아요 ~</p>
+                    <button class='reply_btn' disabled>응답</button>
+                    <button class='delete_btn' disabled>삭제</button>
+                </div>
+                <div class="user_msg_container">
+                    <p class="user_name">username</p>
+                    <p class="direct_msg">사진 너무 좋아요 ~</p>
+                    <button class='reply_btn' disabled>응답</button>
+                    <button class='delete_btn' disabled>삭제</button>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
