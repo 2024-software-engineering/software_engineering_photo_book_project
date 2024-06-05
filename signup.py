@@ -56,7 +56,7 @@ def photo_detail(item_id):
     with sqlite3.connect('photo_album.db') as con:
         cur = con.cursor()
         cur.execute('''
-            SELECT DM_table.DM_msg, user_table.user_nickname
+            SELECT DM_table.DM_ID, DM_table.DM_msg, user_table.user_nickname
             FROM DM_table
             JOIN user_table ON DM_table.user_ID = user_table.ID
             WHERE DM_table.photo_ID = ?
@@ -87,6 +87,22 @@ def msg_send():
         con.commit()
     
     return redirect(url_for('photo_detail',item_id=1))
+
+#DM 삭제
+@app.route('/delete_dm/<int:dm_id>', methods=['POST'])
+def delete_dm(dm_id):
+    if 'user_id' not in session:
+        return redirect(url_for('check_user'))
+
+    user_id = session['user_id']
+
+    with sqlite3.connect('photo_album.db') as con:
+        cur = con.cursor()
+        cur.execute('DELETE FROM DM_table WHERE DM_ID = ? AND user_ID = ?', (dm_id, user_id))
+        con.commit()
+
+    photo_id = request.form['photo_id']
+    return redirect(url_for('photo_detail', item_id=photo_id))
 
 if __name__ == '__main__':
     app.run(debug=True)
