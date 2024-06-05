@@ -95,10 +95,18 @@ form{
     align-items: center;
     flex-direction: column;
 }
-.photo_img{
+.addImage {
+    width: 784px;
+    height: 895px;
+    background-color: lightgray;
+    overflow: hidden;
+    margin: 0px 10px 10px 0px;
+}
+.inputImg {
     width: 784px;
     height: 895px;
 }
+
 
 #photo_detail_container{
     grid-column : 3/4;
@@ -108,14 +116,14 @@ form{
     position: relative;
 }
 
-.photo_detail{
+.photo_detail {
     margin-top: 120px;
     display: flex;
     align-items: center;
     flex-direction: column;
 }
 
-.author{
+.author {
     position: absolute;
     top: 60px;
     left: 0;
@@ -123,60 +131,36 @@ form{
     font-weight: 600;
 }
 
-.item_btn{
-    position: absolute;
-    top: 120px;
-    right: 0;
-    margin-right: 100px;
-    font-size: 18px;
-    font-style: #808080;
-    background-color: transparent;
-    border: 0;
+.photo_text_container {
+    margin-top: 100px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: auto;
 }
 
-.keyword{
-    position: absolute;
-    top : 200px;
-    left: 0;
-    font-size: 18px;
-    font-weight: 400;
+#upload_form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
 }
 
-.description{
-    position: absolute;
-    top : 270px;
-    left: 0;
-    font-size: 18px;
-    font-weight: 400;
-}
-
-#msg_container{
-    margin-top: 210px;
-    margin-right: 100px;
-    border: #2b2b2b;
-    border-style: solid;
-    border-width: 1px;
-    min-height: 640px;
-}
-
-#msg_send_container{
-    margin: 20px;
-    width: 500px;
-    height: 130px;
-}
-
-#msg{
-    margin: 20px;
+#key, #des {
+    margin: 30px;   
     width: 450px;
     height: 127px;
     font-size: 18px;
 }
+
 input::placeholder {
-    display: flex;
     font-size: 15px;
 }
 
-#send_btn{
+
+.upload_btn{
+    margin-top: 50px;
     margin-right: 20px;
     display: block;
     font-size: 18px;
@@ -186,48 +170,4 @@ input::placeholder {
     border: 0px;
     width: 80px;
     height: 40px;
-}
-
-.user_msg_container{
-    display: flex;
-    position: relative;
-    margin-left: 30px;
-    margin-top: 20px;
-    margin-bottom: 20px;
-    border: #2b2b2b;
-    border-style: solid;
-    border-width: 1px;
-    width: 550px;
-    height : 120px;
-}
-.user_name{
-    position: absolute;
-    top: 5px;
-    margin-left: 25px;
-    font-size: 18px;
-    font-weight: 600;
-}
-.direct_msg{
-    position: absolute;
-    top: 50px;
-    margin-left: 25px;
-    font-size: 15px;
-}
-.reply_btn {
-    position: absolute;
-    top: 10px;
-    right: 50px;
-    font-size: 15px;
-    color: #808080;
-    background-color: transparent;
-    border: 0;
-}
-.delete_btn {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    font-size: 15px;
-    color: #808080;
-    background-color: transparent;
-    border: 0;
 }

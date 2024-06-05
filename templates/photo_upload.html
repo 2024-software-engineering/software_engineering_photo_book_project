@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" href="../static/photo_upload.css" />
+    </head>
+    <body>
+        <div id = 'top'>ENJOY YOUR PHOTO BOOK</div>
+        <div id="camera_img_container">
+            <img id = 'camera_img' src="{{url_for('static',filename='assets/camera.png')}}">
+        </div>
+        <div id="container">
+            <div id = 'topbar_container'>
+                <div class="topbar_btn_container"><button class='topbar_btn' onClick="location.href='{{ url_for('photo_page') }}'">Photo</button></div>
+                <div class="topbar_btn_container"><button class='topbar_btn' onClick="location.href='{{ url_for('photo_upload') }}'">Upload</button></div>
+                <div class="topbar_btn_container"><button class='topbar_btn' onClick="location.href='{{ url_for('dm_list') }}'">DM</button></div>
+                <div id="keyword_container">
+                    <form action="search_keyword" method="POST">
+                        <input type="text" id="keyword" name="keyword" placeholder="검색">
+                        <button id="search_btn"><img id='search_img' src="{{url_for('static',filename='assets/search.png')}}"></button>
+                    </form>
+                </div>
+            </div>
+            <div id="photo_container">
+                <form class="photo" method="post" enctype="multipart/form-data">
+                    <div class="addImage" id="image-show"></div>
+                    <input type="file" id="fileInput" name="photo" accept="image/*" onchange="loadFile(this)">
+                </form>
+                <script>
+                    function loadFile(input) {
+                        let file = input.files[0];
+                        let newImage = document.createElement("img");
+            
+                        newImage.src = URL.createObjectURL(file);
+                        newImage.style.width = "100%";
+                        newImage.style.height = "100%";
+                        newImage.style.objectFit = "cover";
+            
+                        let container = document.getElementById('image-show');
+                        container.appendChild(newImage);
+                    }
+                </script>
+            </div>
+            
+            <div id='photo_detail_container'>
+                <div class="photo_detail">
+                    <p class="author">{{ nickname }}</p>
+                    <div class="photo_text_container">
+                        <form id="upload_form">
+                            <input type="text" id="key" name="key" placeholder="enter keyword">
+                            <div id="keywordList"></div>
+                            <input type="text" id="des" name="des" placeholder="enter description">
+                        </form>
+                    </div>
+                    <button type="sumbit" value="DONE" id="upload_btn" class="upload_btn">
+                </div>
+            </div>
+        
+            <script>
+                document.getElementById('key').addEventListener('keypress', function(event) {
+                    if (event.key === 'Enter') {
+                        event.preventDefault();
+                        var keyword = this.value.trim();
+                        if (keyword) {
+                            var displayArea = document.getElementById('keywordList');
+                            var newKeyword = document.createElement('span'); 
+                            newKeyword.textContent = '#' + keyword + ' ';
+                            newKeyword.style.marginRight = '5px';
+                            displayArea.appendChild(newKeyword); 
+                            this.value = '';
+                        }
+                    }
+                });
+
+                document.getElementById('upload_btn').addEventListener('click', function() {
+                    var keywords = Array.from(document.getElementById('keywordList').children).map(span => span.textContent.trim());
+                    var description = document.getElementById('des').value.trim();
+                    var fileInput = document.getElementById('fileInput');
+
+                    var formData = new FormData();
+                    formData.append('photo', fileInput.files[0]);
+                    formData.append('photo_keyw', JSON.stringify(keywords));
+                    formData.append('photo_describ', description); 
+
+                    fetch('/upload_info', {
+                        method: 'POST',
+                        body: formData
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            window.location.href = "{{ url_for('mainpage') }}";
+                        } else {
+                            console.error('Error:', data.message);
+                        }
+                    })
+                    .catch((error) => {
+                        console.error('Error:', error);
+                    });
+                });
+            </script>                
+        </div>
+    </body>
+</html>

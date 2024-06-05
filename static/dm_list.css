@@ -100,20 +100,3 @@ input::placeholder {
     width:44px;
     height: 44px;
 }
-#item_container{
-    margin-top: 50px;
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    grid-template-rows: auto;
-    row-gap: 20px;
-    column-gap: 20px;
-}
-.item{
-    display: flex;
-    align-items: center;
-    flex-direction: column;
-}
-.photo_img{
-    width: 325px;
-    height: 371px;
-}

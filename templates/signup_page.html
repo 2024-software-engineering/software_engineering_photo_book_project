@@ -21,11 +21,11 @@
             </div>
             <div id = 'main_login_container'>
                 <div id="camera_img">
-                    <img src="../assets/camera.png">
+                    <img src="{{ url_for('static', filename='assets/camera.png') }}">
                 </div>
                 <div id="login_container">
                     <div id="login_text">회원가입</div>
-                    <form action="http://localhost:5000/signup" , method="POST">
+                    <form action="{{ url_for('create_user') }}" method="POST">
                         <input type="text" placeholder="닉네임" name="nickname" id="nickname" class="text_area">
                         <input type="text" placeholder="이메일" name ='email' id="email" class="text_area">
                         <input type="text" placeholder="비밀번호" name="password" id="password" class="text_area">
@@ -33,7 +33,7 @@
                         <div class="text_area">
                             <p id="error_text">* 비밀번호가 일치하지 않습니다</p>
                         </div>
-                        <input type="submit" value="확인" id="login_btn" class='text_area' disabled>
+                        <input type="submit" value="확인" id="login_btn" class='text_area'>
                     </form>
                 </div>
             </div>
