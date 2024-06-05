@@ -1,5 +1,5 @@
 import sqlite3
-from flask import Flask,redirect, url_for, render_template,request,abort
+from flask import Flask,redirect, flash, render_template,request,abort
 
 app = Flask(__name__)
 
@@ -29,6 +29,23 @@ def create_user():
             if con:
                 con.close()
             return render_template("login_page.html")
+
+@app.route('/login',methods=['POST','GET'])
+def check_user():
+    if request.method=='POST':
+            
+            email=request.form['email']
+            password= request.form['password']
+
+            with sqlite3.connect('photo_album.db') as con:
+                cur = con.cursor()
+                cur.execute("SELECT * FROM user_table WHERE user_ID = ? AND user_PW = ?", (email, password))
+                user = cur.fetchone()
+
+                if user:
+                    return render_template("mainpage.html")
+                else:
+                    return render_template("login_page.html")
 
 if __name__ == '__main__':
     app.run(debug=True)

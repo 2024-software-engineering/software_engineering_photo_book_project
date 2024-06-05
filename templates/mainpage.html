@@ -24,35 +24,35 @@
             </div>
             <div id = 'main_login_container'>
                 <div id="camera_img_container">
-                    <img id = 'camera_img' src="../assets/camera.png">
+                    <img id = 'camera_img' src="{{ url_for('static', filename='assets/camera.png') }}">
                 </div>
                 <div id="keyword_container">
                     <form action="search_keyword" method="POST">
                         <input type="text" id="keyword" name="keyword" placeholder="검색">
-                        <button id="search_btn"><img id='search_img' src="../assets/search.png"></button>
+                        <button id="search_btn"><img id='search_img' src="{{ url_for('static', filename='assets/search.png') }}"></button>
                     </form>
                 </div>
                 <div id="item_container">
                     <div class ='item'>
-                        <img class='photo_img' src="../assets/dummy_img.webp">
+                        <img class='photo_img' src="{{ url_for('static', filename='assets/dummy_img.png') }}">
                         <p class="author">woo</p>
                         <p class="keyword">#키워드 #키워드</p>
                         <p class="description">어쩌구저쩌구 설명~~~~</p>
                     </div>
                     <div class ='item'>
-                        <img class='photo_img' src="../assets/dummy_img.webp">
+                        <img class='photo_img' src="{{ url_for('static', filename='assets/dummy_img.png') }}">
                         <p class="author">woo</p>
                         <p class="keyword">#키워드</p>
                         <p class="description">어쩌구저쩌구 설명~~~~</p>
                     </div>
                     <div class ='item'>
-                        <img class='photo_img' src="../assets/dummy_img.webp">
+                        <img class='photo_img' src="{{ url_for('static', filename='assets/dummy_img.png') }}">
                         <p class="author">woo</p>
                         <p class="keyword">#키워드</p>
                         <p class="description">어쩌구저쩌구 설명~~~~</p>
                     </div>
                     <div class ='item'>
-                        <img class='photo_img' src="../assets/dummy_img.webp">
+                        <img class='photo_img' src="{{ url_for('static', filename='assets/dummy_img.png') }}">
                         <p class="author">woo</p>
                         <p class="keyword">#키워드</p>
                         <p class="description">어쩌구저쩌구 설명~~~~</p>

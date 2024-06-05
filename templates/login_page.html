@@ -25,13 +25,13 @@
                 </div>
                 <div id="login_container">
                     <div id="login_text">로그인</div>
-                    <form action="http://localhost:5000/login" , method="POST">
+                    <form action="{{ url_for('check_user') }}" , method="POST">
                         <input type="text" placeholder="이메일" name ='email' id="email" class="text_area">
                         <input type="text" placeholder="비밀번호" name="password" id="password" class="text_area">
                         <div class="text_area">
                             <p id="error_text">* 올바른 아이디 또는 비밀번호를 입력해주세요</p>
                         </div>
-                        <input type="submit" value="확인" id="login_btn" class='text_area' disabled>
+                        <input type="submit" value="확인" id="login_btn" class='text_area'>
                     </form>
                     <div class="text_area" id="sign_up_container">
                         <button id="sign_up_btn" onClick="location.href='{{ url_for('signup_page') }}'">회원가입</button>
