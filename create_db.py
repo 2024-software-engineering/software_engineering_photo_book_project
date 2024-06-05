@@ -20,7 +20,6 @@ CREATE TABLE IF NOT EXISTS photo_table (
     photo_ID INTEGER PRIMARY KEY AUTOINCREMENT,
     user_ID INTEGER NOT NULL,
     photo_img TEXT NOT NULL,
-    photo_name TEXT NOT NULL,
     photo_describ TEXT NOT NULL,
     FOREIGN KEY (user_ID) REFERENCES user_table(ID)
 );
