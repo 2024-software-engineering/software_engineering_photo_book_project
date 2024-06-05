@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <link rel="stylesheet" href="../static/login_page.css" />
+        <link rel="stylesheet" href="{{ url_for('static', filename='login_page.css') }}" />
     </head>
     <body>
-        <script src="../static/login_page.js"></script>
+        <script src="{{ url_for('static', filename='login_page.js') }}"></script>
         <div id = 'top'>ENJOY YOUR PHOTO BOOK</div>
         <div id="container">
             <div id = 'sidebar_container'>
@@ -21,7 +21,7 @@
             </div>
             <div id = 'main_login_container'>
                 <div id="camera_img">
-                    <img src="../assets/camera.png">
+                    <img src="{{ url_for('static', filename='assets/camera.png') }}">
                 </div>
                 <div id="login_container">
                     <div id="login_text">로그인</div>
@@ -34,7 +34,7 @@
                         <input type="submit" value="확인" id="login_btn" class='text_area' disabled>
                     </form>
                     <div class="text_area" id="sign_up_container">
-                        <button id="sign_up_btn" onClick="location.href='signup_page.html'">회원가입</button>
+                        <button id="sign_up_btn" onClick="location.href='{{ url_for('signup_page') }}'">회원가입</button>
                     </div>
                 </div>
             </div>
