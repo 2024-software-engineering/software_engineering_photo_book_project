@@ -183,7 +183,7 @@ def dm_list():
     with sqlite3.connect('photo_album.db') as con:
         con.row_factory = sqlite3.Row
         cur = con.cursor()
-        # 최신 DM 정보만 선택
+        # 최신 DM 정보만 선택 및 로그인한 사용자의 게시물만 선택
         cur.execute('''
             WITH LatestDM AS (
                 SELECT 
@@ -209,12 +209,15 @@ def dm_list():
                 DM_table d ON ldm.MaxDMID = d.DM_ID
             LEFT JOIN 
                 user_table dm_sender ON d.user_ID = dm_sender.ID
+            WHERE 
+                u.user_nickname = ?
             ORDER BY 
                 d.DM_ID DESC
-        ''')
+        ''', (user_nickname,))
         lists = cur.fetchall()
 
     return render_template('dm_list.html', user_nickname=user_nickname, lists=lists)
+
 
 
 if __name__ == '__main__':
