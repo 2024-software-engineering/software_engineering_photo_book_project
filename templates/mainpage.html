@@ -12,11 +12,10 @@
                 <div class="sidebar_btn_container"><button class='sidebar_btn' onclick="location.href='{{ url_for('upload_page') }}'">Upload</button></div>
                 <div class="sidebar_btn_container"><button class='sidebar_btn' onclick="location.href='{{ url_for('dm_list') }}'">DM</button></div>
                 <div id ='connecting_user_container'>
-                    <div class="userlist">connecting</div>
-                    <div class="userlist">user1</div>
-                    <div class="userlist">user1</div>
-                    <div class="userlist">user1</div>
-                    <div class="userlist">user1</div>
+                    <div class="userlist">user list</div>
+                    {% for signupuser in signupuserlist%}
+                    <div class="userlist">{{signupuser[0]}}</div>
+                    {% endfor %}
                 </div>
                 <div id="logout">
                     <button id="logout_btn" onclick="location.href='{{ url_for('loginpage') }}'">logout</button>
