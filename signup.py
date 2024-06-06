@@ -11,6 +11,7 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 def loginpage():
     return render_template('login_page.html')
 
+#회원가입 페이지로 렌더링
 @app.route('/signup_page')
 def signup_page():
     return render_template('signup_page.html')
@@ -177,7 +178,44 @@ def upload():
 
 @app.route('/dm_list')
 def dm_list():
-    return render_template('dm_list.html')
+    user_nickname = session['user_nickname']
+    
+    with sqlite3.connect('photo_album.db') as con:
+        con.row_factory = sqlite3.Row
+        cur = con.cursor()
+        # 최신 DM 정보만 선택
+        cur.execute('''
+            WITH LatestDM AS (
+                SELECT 
+                    photo_ID, 
+                    MAX(DM_ID) AS MaxDMID
+                FROM 
+                    DM_table
+                GROUP BY 
+                    photo_ID
+            )
+            SELECT 
+                p.photo_ID, 
+                p.photo_img, 
+                u.user_nickname, 
+                dm_sender.user_nickname || ':' || d.DM_msg AS dm_info
+            FROM 
+                photo_table p
+            JOIN 
+                user_table u ON p.user_ID = u.ID
+            LEFT JOIN 
+                LatestDM ldm ON p.photo_ID = ldm.photo_ID
+            LEFT JOIN 
+                DM_table d ON ldm.MaxDMID = d.DM_ID
+            LEFT JOIN 
+                user_table dm_sender ON d.user_ID = dm_sender.ID
+            ORDER BY 
+                d.DM_ID DESC
+        ''')
+        lists = cur.fetchall()
+
+    return render_template('dm_list.html', user_nickname=user_nickname, lists=lists)
+
 
 if __name__ == '__main__':
     app.run(debug=True)
