@@ -9,7 +9,7 @@
         <div id="container">
             <div id = 'sidebar_container'>
                 <div class="sidebar_btn_container"><button class='sidebar_btn' onclick="location.href='{{ url_for('mainpage') }}'">Photo</button></div>                
-                <div class="sidebar_btn_container"><button class='sidebar_btn' onclick="location.href='{{ url_for('upload_page') }}'">Upload</button></div>
+                <div class="sidebar_btn_container"><button class='sidebar_btn' onclick="location.href='{{ url_for('photo_upload') }}'">Upload</button></div>
                 <div class="sidebar_btn_container"><button class='sidebar_btn' onclick="location.href='{{ url_for('dm_list') }}'">DM</button></div>
                 <div id ='connecting_user_container'>
                     <div class="userlist">connecting</div>
@@ -22,7 +22,7 @@
                     <button id="logout_btn">logout</button>
                 </div>
             </div>
-            <div id = 'main_login_container'>
+            <div id = 'dm_list_container'>
                 <div id="camera_img_container">
                     <img id = 'camera_img' src="{{ url_for('static', filename='assets/camera.png') }}">
                 </div>
@@ -31,6 +31,9 @@
                         <input type="text" id="keyword" name="keyword" placeholder="검색">
                         <button id="search_btn"><img id='search_img' src="{{ url_for('static', filename='assets/search.png') }}"></button>
                     </form>
+                </div>
+                <div id="list_container">
+                    
                 </div>
             </div>
         </div>

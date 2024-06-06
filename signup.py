@@ -1,9 +1,11 @@
 import sqlite3
 from flask import Flask,redirect, url_for, render_template,request,session
 
-
 app = Flask(__name__)
 app.secret_key = '1234'
+
+UPLOAD_FOLDER = 'uploads'
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 @app.route('/')
 def loginpage():
@@ -115,8 +117,8 @@ def delete_dm(dm_id):
     return redirect(url_for('photo_detail', item_id=photo_id))
 
 #업로드 페이지로 렌더링
-@app.route('/upload_page')
-def upload_page():
+@app.route('/upload')
+def photo_upload():
     user_nickname = session['user_nickname']
     return render_template('photo_upload.html', user_nickname=user_nickname)
 
@@ -171,7 +173,7 @@ def upload():
 
         con.commit()
 
-    return redirect(url_for('loginpage'))
+    return redirect(url_for('mainpage'))
 
 @app.route('/dm_list')
 def dm_list():

@@ -55,8 +55,8 @@ body {
     border:0px;
 }
 
-/*로그인 페이지 메인 화면*/
-#main_login_container{
+/*dm list container*/
+#dm_list_container{
     grid-column: 2/3;
     height: 100%;
 }
