@@ -109,34 +109,40 @@ form{
 
 
 #photo_detail_container{
-    grid-column : 3/4;
-    grid-row: 2/3;
-    display: flex;
+    position: absolute;
+    right : 100px;
+    top: 300px;
+    width: 33.33%;
     height: 100%;
-    position: relative;
 }
 
 .photo_detail {
-    margin-top: 120px;
+    margin-top: 200px;
     display: flex;
-    align-items: center;
     flex-direction: column;
 }
 
 .author {
     position: absolute;
-    top: 60px;
-    left: 0;
+    top: 100px;
+    left : 0;
     font-size: 50px;
     font-weight: 600;
 }
 
+.input_text{
+    margin: 20px;
+    display: flex;
+    font-size: 18px;
+    align-items: flex-start;
+}
+
 .photo_text_container {
-    margin-top: 100px;
+    margin-top: 30px;
     padding: 20px;
     display: flex;
     flex-direction: column;
-    align-items: center;
+    align-items: flex-start;
     width: auto;
 }
 
@@ -152,22 +158,31 @@ form{
     width: 450px;
     height: 127px;
     font-size: 18px;
+    border-radius: 25px;
 }
 
 input::placeholder {
     font-size: 15px;
 }
 
-
-.upload_btn{
+.button-container {
+    display: flex;
+    justify-content: center;
+    width: 100%;
     margin-top: 50px;
-    margin-right: 20px;
+}
+
+.upload_btn {
     display: block;
+    position: absolute;
+    top: 800px;
+    right : 300px;
     font-size: 18px;
     background-color: black;
     color: white;
     text-align: center;
-    border: 0px;
+    align-items: center;
+    border: 0;
     width: 80px;
     height: 40px;
 }

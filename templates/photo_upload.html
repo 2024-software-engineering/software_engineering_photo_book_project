@@ -10,9 +10,9 @@
         </div>
         <div id="container">
             <div id = 'topbar_container'>
-                <div class="sidebar_btn_container"><button class='sidebar_btn' onclick="location.href='{{ url_for('mainpage') }}'">사진보기</button></div>                
-                <div class="sidebar_btn_container"><button class='sidebar_btn' onclick="location.href='{{ url_for('photo_upload') }}'">Upload</button></div>
-                <div class="topbar_btn_container"><button class='topbar_btn' onClick="location.href='{{ url_for('dm_list') }}'">DM</button></div>
+                <div class="topbar_btn_container"><button class='topbar_btn' onclick="location.href='{{ url_for('mainpage') }}'">Photo</button></div>
+                <div class="topbar_btn_container"><button class='topbar_btn' onclick="location.href='{{ url_for('upload_page') }}'">Upload</button></div>
+                <div class="topbar_btn_container"><button class='topbar_btn' onclick="location.href='{{ url_for('dm_list') }}'">DM</button></div>
                 <div id="keyword_container">
                     <form action="search_keyword" method="POST">
                         <input type="text" id="keyword" name="keyword" placeholder="검색">
@@ -26,16 +26,19 @@
                         <div class="addImage" id="image-show"></div>
                         <input type="file" id="fileInput" name="photo" accept="image/*" onchange="loadFile(this)">
                     </div>
-                    
                     <div id='photo_detail_container'>
                         <div class="photo_detail">
-                            <p class="author">{{ nickname }}</p>
+                            <p class="author">{{ user_nickname }}</p>
                             <div class="photo_text_container">
+                                <p class="input_text">키워드 입력</p>
                                 <input type="text" id="key" name="key" placeholder="enter keyword">
                                 <div id="keywordList"></div>
+                                <p class="input_text">설명 입력</p>
                                 <input type="text" id="des" name="des" placeholder="enter description">
                             </div>
-                            <button type="submit" value="DONE" id="upload_btn" class="upload_btn">DONE</button>
+                            <div id="button-container">
+                                <button type="submit" value="DONE" id="upload_btn" class="upload_btn">DONE</button>
+                            </div>
                         </div>
                     </div>
                 </form>
@@ -55,9 +58,6 @@
                 }
             </script>
             
-            
-            
-        
             <script>
                 document.getElementById('key').addEventListener('keypress', function(event) {
                     if (event.key === 'Enter') {
@@ -66,8 +66,11 @@
                         if (keyword) {
                             var displayArea = document.getElementById('keywordList');
                             var newKeyword = document.createElement('span'); 
-                            newKeyword.textContent = '#' + keyword + ' ';
-                            newKeyword.style.marginRight = '5px';
+                            newKeyword.textContent = '#' + keyword ;
+                            newKeyword.style.marginRight = '8px';
+                            newKeyword.style.backgroundColor = 'lightgrey';
+                            newKeyword.style.padding = '3px 6px';
+                            newKeyword.style.borderRadius = '5px';
                             displayArea.appendChild(newKeyword); 
                             this.value = '';
                         }
@@ -84,7 +87,7 @@
                     formData.append('photo_keyw', JSON.stringify(keywords));
                     formData.append('photo_describ', description); 
 
-                    fetch('/upload_info', {
+                    fetch('/upload', {
                         method: 'POST',
                         body: formData
                     })

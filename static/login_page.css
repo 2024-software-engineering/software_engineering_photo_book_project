@@ -34,14 +34,14 @@ body {
     color:black;
     background-color: #FFFFFF;
     border:0px;
-    font-size: 25px;
+    font-size: 23px;
 }
 .userlist{
     display: flex;
     justify-content: center;
     color:#FFFFFF;
     background-color: #272424;
-    font-size: 23px;
+    font-size: 20px;
     padding: 5px;
 }
 

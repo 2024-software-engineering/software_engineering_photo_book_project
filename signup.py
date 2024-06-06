@@ -117,14 +117,11 @@ def delete_dm(dm_id):
     photo_id = request.form['photo_id']
     return redirect(url_for('photo_detail', item_id=photo_id))
 
-#사진 upload
-
-
 #업로드 페이지로 렌더링
-@app.route('/upload')
-def photo_upload():
-    return render_template('photo_upload.html')
-    
+@app.route('/upload_page')
+def upload_page():
+    user_nickname = session['user_nickname']
+    return render_template('photo_upload.html', user_nickname=user_nickname)
 
 @app.route('/mainpage')
 def mainpage():
@@ -143,7 +140,7 @@ def mainpage():
     return render_template('mainpage.html', photos=photos)
 
 
-@app.route('/upload', methods=['POST'])
+@app.route('/upload_page', methods=['POST'])
 def upload():
     if 'user_id' not in session:
         return redirect(url_for('loginpage'))
@@ -179,9 +176,11 @@ def upload():
 
     return redirect(url_for('loginpage'))
 
-@app.route('/message')
+@app.route('/dm_list')
 def dm_list():
     return render_template('dm_list.html')
 
 if __name__ == '__main__':
     app.run(debug=True)
+
+
