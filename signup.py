@@ -123,18 +123,31 @@ def photo_upload():
     user_nickname = session['user_nickname']
     return render_template('photo_upload.html', user_nickname=user_nickname)
 
-@app.route('/mainpage')
+@app.route('/mainpage', methods=['GET', 'POST'])
 def mainpage():
+    keyword = request.form.get('keyword', '')  # POST 요청으로 전달된 키워드 가져오기
+
     with sqlite3.connect('photo_album.db') as con:
         cur = con.cursor()
-        cur.execute('''
-            SELECT photo_table.photo_ID, photo_table.photo_img, user_table.user_nickname, 
-                GROUP_CONCAT(photo_keyword_table.keyword), photo_table.photo_describ
-            FROM photo_table
-            JOIN user_table ON photo_table.user_ID = user_table.ID
-            LEFT JOIN photo_keyword_table ON photo_table.photo_ID = photo_keyword_table.photo_ID
-            GROUP BY photo_table.photo_ID
-        ''')
+        if keyword:
+            cur.execute('''
+                SELECT photo_table.photo_ID, photo_table.photo_img, user_table.user_nickname, 
+                    GROUP_CONCAT(photo_keyword_table.keyword), photo_table.photo_describ
+                FROM photo_table
+                JOIN user_table ON photo_table.user_ID = user_table.ID
+                LEFT JOIN photo_keyword_table ON photo_table.photo_ID = photo_keyword_table.photo_ID
+                WHERE photo_keyword_table.keyword LIKE ?
+                GROUP BY photo_table.photo_ID
+            ''', ('%' + keyword + '%',))
+        else:
+            cur.execute('''
+                SELECT photo_table.photo_ID, photo_table.photo_img, user_table.user_nickname, 
+                    GROUP_CONCAT(photo_keyword_table.keyword), photo_table.photo_describ
+                FROM photo_table
+                JOIN user_table ON photo_table.user_ID = user_table.ID
+                LEFT JOIN photo_keyword_table ON photo_table.photo_ID = photo_keyword_table.photo_ID
+                GROUP BY photo_table.photo_ID
+            ''')
         photos = cur.fetchall()
 
     return render_template('mainpage.html', photos=photos)

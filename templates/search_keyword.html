@@ -27,7 +27,7 @@
                     <img id = 'camera_img' src="{{ url_for('static', filename='assets/camera.png') }}">
                 </div>
                 <div id="keyword_container">
-                    <form action="{{ url_for('mainpage') }}" method="POST">
+                    <form action="search_keyword" method="POST">
                         <input type="text" id="keyword" name="keyword" placeholder="검색">
                         <button id="search_btn"><img id='search_img' src="{{ url_for('static', filename='assets/search.png') }}"></button>
                     </form>
@@ -36,7 +36,7 @@
                 <div id="item_container">
                     {% for photo in photos %}
                     <div class ='item'>
-                        <a class="item_link" href="{{ url_for('photo_detail', item_id=photo[0]) }}">
+                        <a href="{{ url_for('photo_detail', item_id=photo[0]) }}">
                             <img class='photo_img' src="{{ url_for('static', filename=photo[1]) }}">
                             <p class="author">{{ photo[2] }}</p>
                             <p class="keyword">{{ photo[3] }}</p>
