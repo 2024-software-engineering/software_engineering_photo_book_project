@@ -80,7 +80,7 @@ def photo_detail(item_id):
         'author': photo[1],
         'keywords': '#키워드',
         'description': photo[2],
-        'img_src': 'photo[0]'
+        'img_src': photo[0]
     }
     return render_template('photo_detail.html', item=item, dms=dms)
 

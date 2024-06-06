@@ -112,6 +112,16 @@ input::placeholder {
     margin-bottom: 20px;
 }
 
+.item_link {
+    text-decoration: none;
+    color: inherit;
+}
+
+.item_link:hover {
+    text-decoration: none;
+    color: inherit;
+}
+
 .item {
     display: flex;
     justify-content: flex-start;

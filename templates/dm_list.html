@@ -33,24 +33,27 @@
                 </div>
                 {% for item in lists %}
                 <div class="user_msg_container">
-                    <div class ='item'>
-                        <img class='photo_img' src="{{ url_for('static', filename=item['photo_img']) }}">
-                        <div class="text_content">
-                            <p class="author"> {{ item['user_nickname'] }} </p>
-                            <p class="text">이 게시물에 추가된 최신 메시지</p>
-                            <div class="other_user_container">
-                                {% if item['dm_info'] %}
-                                    {% set dm_parts = item['dm_info'].split(':') %}
-                                    <p class="other_user"> [ {{ dm_parts[0] }} ] </p>
-                                    <p class="other_user_dm"> {{ dm_parts[1] }} </p>
-                                {% else %}
-                                    <p class="text"> DM 정보가 없습니다. </p>
-                                {% endif %}
+                    <a href="{{ url_for('photo_detail', item_id=item['photo_ID']) }}" class="item_link">
+                        <div class ='item'>
+                            <img class='photo_img' src="{{ url_for('static', filename=item['photo_img']) }}">
+                            <div class="text_content">
+                                <p class="author"> {{ item['user_nickname'] }} </p>
+                                <p class="text">이 게시물에 추가된 최신 메시지</p>
+                                <div class="other_user_container">
+                                    {% if item['dm_info'] %}
+                                        {% set dm_parts = item['dm_info'].split(':') %}
+                                        <p class="other_user"> [ {{ dm_parts[0] }} ] </p>
+                                        <p class="other_user_dm"> {{ dm_parts[1] }} </p>
+                                    {% else %}
+                                        <p class="text"> DM 정보가 없습니다. </p>
+                                    {% endif %}
+                                </div>
                             </div>
                         </div>
-                    </div>
+                    </a>
                 </div>
                 {% endfor %}
+                
                    
             </div>
         </div>
