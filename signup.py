@@ -5,6 +5,9 @@ from flask import Flask,redirect, url_for, render_template,request,session
 app = Flask(__name__)
 app.secret_key = '1234'
 
+UPLOAD_FOLDER = 'uploads'
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+
 @app.route('/')
 def loginpage():
     return render_template('login_page.html')
@@ -137,7 +140,7 @@ def mainpage():
     return render_template('mainpage.html', photos=photos)
 
 
-@app.route('/upload', methods=['POST'])
+@app.route('/upload_page', methods=['POST'])
 def upload():
     if 'user_id' not in session:
         return redirect(url_for('loginpage'))
