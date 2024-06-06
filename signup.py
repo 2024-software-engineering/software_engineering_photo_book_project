@@ -10,7 +10,13 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 @app.route('/')
 def loginpage():
-    return render_template('login_page.html')
+    with sqlite3.connect('photo_album.db') as con:
+        cur = con.cursor()
+
+        cur.execute('''select user_nickname from user_table''')
+        signupuserlist = cur.fetchall()
+
+    return render_template('login_page.html',signupuserlist=signupuserlist)
 
 @app.route('/signup_page')
 def signup_page():
@@ -144,7 +150,10 @@ def mainpage():
         ''')
         photos = cur.fetchall()
 
-    return render_template('mainpage.html', photos=photos)
+        cur.execute('''select user_nickname from user_table''')
+        signupuserlist = cur.fetchall()
+
+    return render_template('mainpage.html', photos=photos, signupuserlist=signupuserlist)
 
 @app.route('/upload_page', methods=['POST'])
 def upload():
@@ -183,6 +192,87 @@ def upload():
         con.commit()
 
     return jsonify({'success': True})
+
+#사진수정하기
+
+
+@app.route('/photo_modify/<int:photo_id>', methods=['GET', 'POST'])
+def modify_page(photo_id):
+    if request.method == 'POST':
+        # Get the form data from the request
+        description = request.form['description']
+        keywords = json.loads(request.form['keywords'])
+        photo_file = request.files.get('photo')
+
+        with sqlite3.connect('photo_album.db') as con:
+            cur = con.cursor()
+
+            # Update photo description
+            cur.execute('''
+                UPDATE photo_table
+                SET photo_describ = ?
+                WHERE photo_ID = ?
+            ''', (description, photo_id))
+
+            # Update photo image if a new image is uploaded
+            if photo_file:
+                photo_path = f'uploads/{photo_file.filename}'
+                photo_file.save(f'static/{photo_path}')
+                cur.execute('''
+                    UPDATE photo_table
+                    SET photo_img = ?
+                    WHERE photo_ID = ?
+                ''', (photo_path, photo_id))
+
+            # Delete existing keywords
+            cur.execute('''
+                DELETE FROM photo_keyword_table
+                WHERE photo_ID = ?
+            ''', (photo_id,))
+
+            # Insert new keywords
+            for keyword in keywords:
+                cur.execute('''
+                    INSERT INTO photo_keyword_table (photo_ID, keyword)
+                    VALUES (?, ?)
+                ''', (photo_id, keyword))
+
+            con.commit()
+
+        return jsonify(success=True)
+
+    else:
+        with sqlite3.connect('photo_album.db') as con:
+            cur = con.cursor()
+
+            # 사진 정보 가져오기
+            cur.execute('''
+                SELECT photo_img, photo_describ 
+                FROM photo_table 
+                WHERE photo_ID = ?
+            ''', (photo_id,))
+            photo = cur.fetchone()
+
+            # 키워드 정보 가져오기
+            cur.execute('''
+                SELECT keyword 
+                FROM photo_keyword_table 
+                WHERE photo_ID = ?
+            ''', (photo_id,))
+            keywords = cur.fetchall()
+
+        # 키워드 리스트 만들기
+        keywords = [keyword[0] for keyword in keywords]
+
+        # 템플릿 렌더링
+        return render_template('photo_modify.html', 
+                            photo_id=photo_id,
+                            photo_img=photo[0], 
+                            description=photo[1], 
+                            keywords=keywords)
+
+
+
 
 @app.route('/dm_list')
 def dm_list():

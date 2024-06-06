@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="{{ url_for('static', filename='photo_modify.css') }}" />
+</head>
+<body>
+    <div id='top'>ENJOY YOUR PHOTO BOOK</div>
+    <div id="camera_img_container">
+        <img id='camera_img' src="{{ url_for('static', filename='assets/camera.png') }}">
+    </div>
+    <div id="container">
+        <div id='topbar_container'>
+            <div class="topbar_btn_container"><button class='topbar_btn' onclick="location.href='{{ url_for('mainpage') }}'">Photo</button></div>
+            <div class="topbar_btn_container"><button class='topbar_btn' onclick="location.href='{{ url_for('upload_page') }}'">Upload</button></div>
+            <div class="topbar_btn_container"><button class='topbar_btn' onclick="location.href='{{ url_for('dm_list') }}'">DM</button></div>
+            <div id="keyword_container">
+                <form action="search_keyword" method="POST">
+                    <input type="text" id="keyword" name="keyword" placeholder="검색">
+                    <button id="search_btn"><img id='search_img' src="{{ url_for('static', filename='assets/search.png') }}"></button>
+                </form>
+            </div>
+        </div>
+        <div id="photo_container">
+            <div class="photo">
+                <form id="photoForm" method="POST" enctype="multipart/form-data" action="{{ url_for('modify_page', photo_id=photo_id) }}">
+                    <div class="addImage" id="image-show">
+                        <img src="{{ url_for('static', filename=photo_img) }}" style="width: 100%; height: 100%; object-fit: cover;">
+                    </div>
+                    <input type="file" id="fileInput" name="photo" accept="image/*" onchange="loadFile(this)">
+                    <div id='photo_detail_container'>
+                        <div class="photo_detail">
+                            <p class="author">{{ session['user_nickname'] }}</p>
+                            <div class="photo_text_container">
+                                <p class="input_text">키워드 입력</p>
+                                <div id="keywordList">
+                                    {% for keyword in keywords %}
+                                        <span class="keyword_box">{{ keyword }}<button type="button" class="delete_btn" onclick="removeKeyword(this)">x</button></span>
+                                    {% endfor %}
+                                </div>
+                                <input type="text" id="key" name="key" placeholder="enter keyword">
+                                <p class="input_text">설명 입력</p>
+                                <input type="text" id="des" name="des" placeholder="enter description" value="{{ description }}">
+                            </div>
+                            <div id="button-container">
+                                <button type="button" value="DONE" id="upload_btn" class="upload_btn">DONE</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <script>
+            function loadFile(input) {
+                let file = input.files[0];
+                let newImage = document.createElement("img");
+                newImage.src = URL.createObjectURL(file);
+                newImage.style.width = "100%";
+                newImage.style.height = "100%";
+                newImage.style.objectFit = "cover";
+                let container = document.getElementById('image-show');
+                container.innerHTML = ''; 
+                container.appendChild(newImage);
+            }
+
+            document.getElementById('key').addEventListener('keypress', function(event) {
+                if (event.key === 'Enter') {
+                    event.preventDefault();
+                    var keyword = this.value.trim();
+                    if (keyword) {
+                        var displayArea = document.getElementById('keywordList');
+                        var newKeyword = document.createElement('span'); 
+                        newKeyword.textContent = keyword;
+                        newKeyword.classList.add('keyword_box');
+                        var deleteBtn = document.createElement('button');
+                        deleteBtn.textContent = 'x';
+                        deleteBtn.classList.add('delete_btn');
+                        deleteBtn.onclick = function() {
+                            displayArea.removeChild(newKeyword);
+                        };
+                        newKeyword.appendChild(deleteBtn);
+                        displayArea.appendChild(newKeyword); 
+                        this.value = '';
+                    }
+                }
+            });
+
+            document.getElementById('upload_btn').addEventListener('click', function() {
+                var keywords = Array.from(document.querySelectorAll('.keyword_box')).map(span => span.childNodes[0].nodeValue.trim());
+                var description = document.getElementById('des').value.trim();
+                var fileInput = document.getElementById('fileInput');
+
+                var formData = new FormData(document.getElementById('photoForm'));
+                formData.append('keywords', JSON.stringify(keywords));
+                formData.append('description', description);
+                formData.append('photo_id', "{{ photo_id }}"); 
+
+                fetch('{{ url_for("modify_page", photo_id=photo_id) }}', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        window.location.href = "{{ url_for('mainpage') }}";
+                    } else {
+                        console.error('Error:', data.message);
+                    }
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                });
+            });
+
+            function removeKeyword(element) {
+                var keywordBox = element.parentElement;
+                keywordBox.remove();
+            }
+        </script>
+    </div>
+</body>
+</html>

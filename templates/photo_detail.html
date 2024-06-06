@@ -28,7 +28,7 @@
         <div id='photo_detail_container'>
             <div class="photo_detail">
                 <p class="author">{{ item['author'] }}</p>
-                <button class='item_btn' disabled>수정</button>
+                <button class='item_btn' onclick='location.href="{{ url_for("modify_page", photo_id=item["id"]) }}"'>수정</button>
                 <p class="keyword">{{ item['keywords'] }}</p>
                 <p class="description">{{ item['description'] }}</p>
             </div>
