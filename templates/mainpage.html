@@ -39,7 +39,7 @@
                         <a class="item_link" href="{{ url_for('photo_detail', item_id=photo[0]) }}">
                             <img class='photo_img' src="{{ url_for('static', filename=photo[1]) }}">
                             <p class="author">{{ photo[2] }}</p>
-                            <p class="keyword">{{ photo[3] }}</p>
+                            <p class="keyword">{{ photo[3]|safe }}</p>
                             <p class="description">{{ photo[4] }}</p>
                         </a>
                     </div>

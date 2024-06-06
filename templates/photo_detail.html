@@ -67,7 +67,30 @@
     <script>
         function showReplyForm(dmId) {
             const replyContainer = document.getElementById(`reply_container_${dmId}`);
-            replyContainer.style.display = replyContainer.style.display === 'none' ? 'block' : 'none';
+            const isHidden = replyContainer.style.display === 'none';
+    
+            // 보이게 설정
+            replyContainer.style.display = isHidden ? 'block' : 'none';
+    
+            if (isHidden) {
+                // 스타일 적용
+                const replyInput = replyContainer.querySelector('input[name="msg"]');
+                replyInput.style.margin = '10px';
+                replyInput.style.width = '450px';
+                replyInput.style.height = '77px';
+                replyInput.style.fontSize = '15px';
+    
+                const replyButton = replyContainer.querySelector('button');
+                replyButton.style.marginRight = '20px';
+                replyButton.style.display = 'block';
+                replyButton.style.fontSize = '15px';
+                replyButton.style.backgroundColor = 'black';
+                replyButton.style.color = 'white';
+                replyButton.style.textAlign = 'center';
+                replyButton.style.border = '0px';
+                replyButton.style.width = '60px';
+                replyButton.style.height = '30px';
+            }
         }
     </script>
 </body>

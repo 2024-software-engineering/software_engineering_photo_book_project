@@ -129,3 +129,8 @@ input::placeholder {
     width: 325px;
     height: 371px;
 }
+
+.highlight {
+    background-color: yellow; /* 강조 색상 변경 */
+    color: red; /* 강조 텍스트 색상 변경 */
+}

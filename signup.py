@@ -133,7 +133,7 @@ def photo_upload():
 
 @app.route('/mainpage', methods=['GET', 'POST'])
 def mainpage():
-    keyword = request.form.get('keyword', '')  # POST 요청으로 전달된 키워드 가져오기
+    keyword = request.form.get('keyword', '')
 
     with sqlite3.connect('photo_album.db') as con:
         cur = con.cursor()
@@ -144,8 +144,8 @@ def mainpage():
                 FROM photo_table
                 JOIN user_table ON photo_table.user_ID = user_table.ID
                 LEFT JOIN photo_keyword_table ON photo_table.photo_ID = photo_keyword_table.photo_ID
-                WHERE photo_keyword_table.keyword LIKE ?
                 GROUP BY photo_table.photo_ID
+                HAVING GROUP_CONCAT(photo_keyword_table.keyword) LIKE ?
             ''', ('%' + keyword + '%',))
         else:
             cur.execute('''
@@ -158,7 +158,18 @@ def mainpage():
             ''')
         photos = cur.fetchall()
 
-    return render_template('mainpage.html', photos=photos)
+    # 검색된 키워드 강조 처리
+    highlighted_photos = []
+    for photo in photos:
+        keywords = photo[3].split(',')
+        highlighted_keywords = ', '.join(
+            [f'<span class="highlight">{kw}</span>' if keyword and keyword in kw else kw for kw in keywords]
+        )
+        highlighted_photos.append((photo[0], photo[1], photo[2], highlighted_keywords, photo[4]))
+
+    return render_template('mainpage.html', photos=highlighted_photos, keyword=keyword)
+
+
 
 
 @app.route('/upload_page', methods=['POST'])
