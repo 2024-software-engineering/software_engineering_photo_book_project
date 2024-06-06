@@ -1,60 +1,74 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <link rel="stylesheet" href="../static/photo_detail.css" />
-    </head>
-    <body>
-        <!-- <script src="../static/login_page.js"></script> -->
-        <div id = 'top'>ENJOY YOUR PHOTO BOOK</div>
-        <div id="camera_img_container">
-            <img id = 'camera_img' src="{{url_for('static',filename='assets/camera.png')}}">
+<head>
+    <link rel="stylesheet" href="{{ url_for('static', filename='photo_detail.css') }}" />
+</head>
+<body>
+    <div id='top'>ENJOY YOUR PHOTO BOOK</div>
+    <div id="camera_img_container">
+        <img id='camera_img' src="{{ url_for('static', filename='assets/camera.png') }}">
+    </div>
+    <div id="container">
+        <div id='topbar_container'>
+            <div class="topbar_btn_container"><button class='topbar_btn' onclick="location.href='{{ url_for('mainpage') }}'">Photo</button></div>
+            <div class="topbar_btn_container"><button class='topbar_btn' onclick="location.href='{{ url_for('upload_page') }}'">Upload</button></div>
+            <div class="topbar_btn_container"><button class='topbar_btn' onclick="location.href='{{ url_for('dm_list') }}'">DM</button></div>
+            <div id="keyword_container">
+                <form action="search_keyword" method="POST">
+                    <input type="text" id="keyword" name="keyword" placeholder="검색">
+                    <button id="search_btn"><img id='search_img' src="{{ url_for('static', filename='assets/search.png') }}"></button>
+                </form>
+            </div>
         </div>
-        <div id="container">
-            <div id = 'topbar_container'>
-                <div class="topbar_btn_container"><button class='topbar_btn' onclick="location.href='{{ url_for('mainpage') }}'">Photo</button></div>
-                <div class="topbar_btn_container"><button class='topbar_btn' onclick="location.href='{{ url_for('upload_page') }}'">Upload</button></div>
-                <div class="topbar_btn_container"><button class='topbar_btn' onclick="location.href='{{ url_for('dm_list') }}'">DM</button></div>
-                <div id="keyword_container">
-                    <form action="search_keyword" method="POST">
-                        <input type="text" id="keyword" name="keyword" placeholder="검색">
-                        <button id="search_btn"><img id='search_img' src="{{url_for('static',filename='assets/search.png')}}"></button>
-                    </form>
-                </div>
+        <div id="photo_container">
+            <div class='photo'>
+                <img class='photo_img' src="{{ url_for('static', filename=item['img_src']) }}">
             </div>
-            <div id="photo_container">
-                <div class ='photo'>
-                    <img class='photo_img' src="{{url_for('static',filename='assets/dummy_img.webp')}}">
-                </div>
+        </div>
+        <div id='photo_detail_container'>
+            <div class="photo_detail">
+                <p class="author">{{ item['author'] }}</p>
+                <button class='item_btn' disabled>수정</button>
+                <p class="keyword">{{ item['keywords'] }}</p>
+                <p class="description">{{ item['description'] }}</p>
             </div>
-            <div id = 'photo_detail_container'>
-                <div class="photo_detail">
-                    <p class="author">woo</p>
-                    <button class='item_btn' disabled>수정</button>
-                    <p class="keyword">#키워드 #키워드</p>
-                    <p class="description">어쩌구저쩌구 설명~~~~</p>
-                </div>
+        </div>
+        <div id="msg_container">
+            <div class="msg_send_container">
+                <form action="{{ url_for('msg_send') }}" method="POST">
+                    <input type="hidden" name="photo_id" value="{{ item['id'] }}">
+                    <input type="text" id="msg" name="msg" placeholder="send message">
+                    <button id="send_btn">SEND</button>
+                </form>
             </div>
-            <div id="msg_container">
-                <div class="msg_send_container">
-                    <form action="{{ url_for('msg_send') }}" method="POST">
-                        <input type="text" id="msg" name="msg" placeholder="send message">
-                        <button id="send_btn">SEND</button>
-                    </form>
-                </div>
-                {%for dm in dms %}
-                <div class="user_msg_container">
-                    <p class="user_name">{{dm[2]}}</p>
-                    <p class="direct_msg">{{dm[1]}}</p>
-                    <button class='reply_btn'>응답</button>
-                    {% if dm[3] == user_id %} 
-                    <form action="{{ url_for('delete_dm', dm_id=dm[0]) }}" method="POST" style="display:inline;">
-                        <input type="hidden" name="photo_id" value="{{ item.id }}">
-                        <button class='delete_btn'>삭제</button>
-                    </form>
+            {% for dm in dms %}
+            <div class="user_msg_container {% if dm[4] %}reply_msg_container{% endif %}" id="msg_{{ dm[0] }}">
+                <p class="user_name">{{ dm[2] }}</p>
+                <p class="direct_msg">{{ dm[1] }}</p>
+                <button class='reply_btn' onclick="showReplyForm({{ dm[0] }})">응답</button>
+                {% if dm[3] == session['user_id'] %}
+                <form action="{{ url_for('delete_dm', dm_id=dm[0]) }}" method="POST" style="display:inline;">
+                    <input type="hidden" name="photo_id" value="{{ item['id'] }}">
+                    <button class='delete_btn'>삭제</button>
+                </form>
                 {% endif %}
-                </div>
-                {% endfor %}
             </div>
+            <div class="reply_container" id="reply_container_{{ dm[0] }}" style="display:none;">
+                <form action="{{ url_for('msg_send') }}" method="POST">
+                    <input type="hidden" name="photo_id" value="{{ item['id'] }}">
+                    <input type="hidden" name="parent_id" value="{{ dm[0] }}">
+                    <input type="text" name="msg" placeholder="send message">
+                    <button>SEND</button>
+                </form>
+            </div>
+            {% endfor %}
         </div>
-    </body>
+    </div>
+    <script>
+        function showReplyForm(dmId) {
+            const replyContainer = document.getElementById(`reply_container_${dmId}`);
+            replyContainer.style.display = replyContainer.style.display === 'none' ? 'block' : 'none';
+        }
+    </script>
+</body>
 </html>

@@ -231,3 +231,21 @@ input::placeholder {
     background-color: transparent;
     border: 0;
 }
+
+.reply_container {
+    margin-left: 50px;
+    margin-top: 20px;
+}
+
+.reply_msg_container {
+    display: flex;
+    position: relative;
+    margin-left: 80px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    border: #2b2b2b;
+    border-style: solid;
+    border-width: 1px;
+    width: 550px;
+    height: 120px;
+}
