@@ -108,6 +108,18 @@ input::placeholder {
     row-gap: 20px;
     column-gap: 20px;
 }
+
+/*리다이렉션 시 파란색(?) 뜨는거 없애는 코드 추가 */
+.item_link {
+    text-decoration: none;
+    color: inherit;
+}
+
+.item_link:hover {
+    text-decoration: none;
+    color: inherit;
+}
+
 .item{
     display: flex;
     align-items: center;
