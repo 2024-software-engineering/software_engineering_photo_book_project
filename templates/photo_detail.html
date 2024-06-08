@@ -29,7 +29,9 @@
             <div class="photo_detail">
                 <p class="author">{{ item['author'] }}</p>
                 <p class="line"></p>
-                <button class='item_btn' onclick='location.href="{{ url_for("modify_page", photo_id=item["id"]) }}"'>수정</button>
+                {% if item['is_user'] %}
+                    <button class='item_btn' onclick='location.href="{{ url_for("modify_page", photo_id=item["id"]) }}"'>수정</button>
+                {% endif %}
                 <p class="keyword"><span class="keyword-item">{{ item['keywords'] }}</span></p>
                 <p class="description">{{ item['description'] }}</p>
             </div>

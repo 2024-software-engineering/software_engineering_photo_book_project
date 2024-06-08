@@ -70,7 +70,7 @@ def photo_detail(item_id):
         cur = con.cursor()
 
         cur.execute('''
-            SELECT photo_table.photo_img, user_table.user_nickname, GROUP_CONCAT(photo_keyword_table.keyword), photo_table.photo_describ
+            SELECT photo_table.photo_img, user_table.user_nickname, GROUP_CONCAT(photo_keyword_table.keyword), photo_table.photo_describ, photo_table.user_ID
             FROM photo_table
             JOIN user_table ON photo_table.user_ID = user_table.ID
             LEFT JOIN photo_keyword_table ON photo_table.photo_ID = photo_keyword_table.photo_ID
@@ -87,6 +87,8 @@ def photo_detail(item_id):
         ''', (item_id,))
         dms = cur.fetchall()
 
+        is_user = 'user_id' in session and session['user_id'] == photo[4]
+
     keywords = photo[2] if photo[2] is not None else ''
     keywords_list = keywords.split(',')
     formatted_keywords = ' '.join([f'# {kw.strip()}' for kw in keywords_list])
@@ -96,7 +98,8 @@ def photo_detail(item_id):
     'author': photo[1],
     'keywords': formatted_keywords,
     'description': photo[3],
-    'img_src': photo[0]
+    'img_src': photo[0],
+    'is_user': is_user
     }
 
     return render_template('photo_detail.html', item=item, dms=dms)
