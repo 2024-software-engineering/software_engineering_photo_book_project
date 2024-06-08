@@ -87,15 +87,20 @@ def photo_detail(item_id):
         ''', (item_id,))
         dms = cur.fetchall()
 
+    keywords = photo[2] if photo[2] is not None else ''
+    keywords_list = keywords.split(',')
+    formatted_keywords = ' '.join([f'# {kw.strip()}' for kw in keywords_list])
+
     item = {
-        'id': item_id,
-        'author': photo[1],
-        'keywords': ' '.join([f'# {kw}' for kw in photo[2].split(',')]),
-        'description': photo[3],
-        'img_src': photo[0]
+    'id': item_id,
+    'author': photo[1],
+    'keywords': formatted_keywords,
+    'description': photo[3],
+    'img_src': photo[0]
     }
 
     return render_template('photo_detail.html', item=item, dms=dms)
+
 
 # DM 메시지 저장
 @app.route('/msg_send', methods=['POST'])
@@ -171,11 +176,14 @@ def mainpage():
     # 검색된 키워드 강조 처리
     highlighted_photos = []
     for photo in photos:
-        keywords = photo[3].split(',')
-        highlighted_keywords = ', '.join(
-            [f'<span class="highlight"># {kw}</span>' if keyword and keyword in kw else f'# {kw}' for kw in keywords]
-        )
+        keywords = photo[3].split(',') if photo[3] is not None else []
+        keywords = [kw.strip() for kw in keywords]
+        highlighted_keywords = ', '.join([
+            f'<span class="highlight"># {kw}</span>' if keyword and keyword in kw else f'# {kw}'
+            for kw in keywords
+        ])
         highlighted_photos.append((photo[0], photo[1], photo[2], highlighted_keywords, photo[4]))
+
 
     return render_template('mainpage.html', photos=highlighted_photos, keyword=keyword, signupuserlist=signupuserlist)
 
@@ -218,11 +226,9 @@ def upload():
 
     return jsonify({'success': True})
 
-#사진수정하기
 @app.route('/photo_modify/<int:photo_id>', methods=['GET', 'POST'])
 def modify_page(photo_id):
     if request.method == 'POST':
-        # Get the form data from the request
         description = request.form['description']
         keywords = json.loads(request.form['keywords'])
         photo_file = request.files.get('photo')
@@ -268,7 +274,7 @@ def modify_page(photo_id):
         with sqlite3.connect('photo_album.db') as con:
             cur = con.cursor()
 
-            # 사진 정보 가져오기
+            # Fetch photo information
             cur.execute('''
                 SELECT photo_img, photo_describ 
                 FROM photo_table 
@@ -276,7 +282,7 @@ def modify_page(photo_id):
             ''', (photo_id,))
             photo = cur.fetchone()
 
-            # 키워드 정보 가져오기
+            # Fetch keywords information
             cur.execute('''
                 SELECT keyword 
                 FROM photo_keyword_table 
@@ -284,15 +290,16 @@ def modify_page(photo_id):
             ''', (photo_id,))
             keywords = cur.fetchall()
 
-        # 키워드 리스트 만들기
+        # Convert keywords to a list
         keywords = [keyword[0] for keyword in keywords]
 
-        # 템플릿 렌더링
+        # Render template
         return render_template('photo_modify.html', 
                             photo_id=photo_id,
                             photo_img=photo[0], 
                             description=photo[1], 
                             keywords=keywords)
+
 
 #dm_list 불러오기
 @app.route('/dm_list')

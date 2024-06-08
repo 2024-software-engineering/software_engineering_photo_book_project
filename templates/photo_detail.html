@@ -71,11 +71,9 @@
             const replyContainer = document.getElementById(`reply_container_${dmId}`);
             const isHidden = replyContainer.style.display === 'none';
     
-            // 보이게 설정
             replyContainer.style.display = isHidden ? 'block' : 'none';
     
             if (isHidden) {
-                // 스타일 적용
                 const replyInput = replyContainer.querySelector('input[name="msg"]');
                 replyInput.style.margin = '10px';
                 replyInput.style.width = '450px';

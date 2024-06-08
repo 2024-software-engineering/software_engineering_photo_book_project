@@ -28,6 +28,7 @@
             <div id='photo_detail_container'>
                 <div class="photo_detail">
                     <p class="author">{{ user_nickname }}</p>
+                    <p class="line"></p>
                     <div class="photo_text_container">
                         <p class="input_text">키워드 입력</p>
                         <input type="text" id="key" name="key" placeholder="enter keyword">
@@ -60,11 +61,13 @@
                     if (keyword) {
                         var displayArea = document.getElementById('keywordList');
                         var newKeyword = document.createElement('span'); 
-                        newKeyword.textContent = '#' + keyword;
+                        newKeyword.textContent = '# ' + keyword;
                         newKeyword.style.marginRight = '8px';
                         newKeyword.style.backgroundColor = 'lightgrey';
                         newKeyword.style.padding = '3px 6px';
                         newKeyword.style.borderRadius = '5px';
+                        newKeyword.style.fontFamily = 'Pretendard-Regular';
+                        newKeyword.style.fontSize = '17px';
                         displayArea.appendChild(newKeyword); 
                         this.value = '';
                     }
