@@ -90,7 +90,7 @@ def photo_detail(item_id):
     item = {
         'id': item_id,
         'author': photo[1],
-        'keywords': ' '.join([f'#{kw}' for kw in photo[2].split(',')]),
+        'keywords': ' '.join([f'# {kw}' for kw in photo[2].split(',')]),
         'description': photo[3],
         'img_src': photo[0]
     }
@@ -173,11 +173,12 @@ def mainpage():
     for photo in photos:
         keywords = photo[3].split(',')
         highlighted_keywords = ', '.join(
-            [f'<span class="highlight">{kw}</span>' if keyword and keyword in kw else kw for kw in keywords]
+            [f'<span class="highlight"># {kw}</span>' if keyword and keyword in kw else f'# {kw}' for kw in keywords]
         )
         highlighted_photos.append((photo[0], photo[1], photo[2], highlighted_keywords, photo[4]))
 
     return render_template('mainpage.html', photos=highlighted_photos, keyword=keyword, signupuserlist=signupuserlist)
+
 
 @app.route('/upload_page', methods=['POST'])
 def upload():

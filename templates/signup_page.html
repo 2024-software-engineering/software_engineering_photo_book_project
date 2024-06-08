@@ -6,37 +6,25 @@
     <body>
         
         <div id = 'top'>ENJOY YOUR PHOTO BOOK</div>
-        <div id="container">
-            <div id = 'sidebar_container'>
-                <div class="sidebar_btn_container"><button class='sidebar_btn' disabled>Photo</button></div>
-                <div class="sidebar_btn_container"><button class='sidebar_btn' disabled>DM</button></div>
-                <div class="sidebar_btn_container"><button class='sidebar_btn' disabled>Upload</button></div>
-                <div id ='connecting_user_container'>
-                    <div class="userlist">user list</div>
-                    {% for signupuser in signupuserlist%}
-                    <div class="userlist">{{signupuser[0]}}</div>
-                    {% endfor %}
-                </div>
+        <div id = 'main_signup_container'>
+            <div id="camera_img">
+                <img src="{{ url_for('static', filename='assets/camera.png') }}">
             </div>
-            <div id = 'main_login_container'>
-                <div id="camera_img">
-                    <img src="{{ url_for('static', filename='assets/camera.png') }}">
-                </div>
-                <div id="login_container">
-                    <div id="login_text">회원가입</div>
-                    <form action="{{ url_for('create_user') }}" method="POST">
-                        <input type="text" placeholder="닉네임" name="nickname" id="nickname" class="text_area">
-                        <input type="text" placeholder="이메일" name ='email' id="email" class="text_area">
-                        <input type="text" placeholder="비밀번호" name="password" id="password" class="text_area">
-                        <input type="text" placeholder="비밀번호 확인" id="password_check" class="text_area">
-                        <div class="text_area">
-                            <p id="error_text">* 비밀번호가 일치하지 않습니다</p>
-                        </div>
-                        <input type="submit" value="확인" id="login_btn" class='text_area'>
-                    </form>
-                </div>
+            <div id="signup_container">
+                <div id="signup_text">회원가입</div>
+                <form action="{{ url_for('create_user') }}" method="POST">
+                    <input type="text" placeholder="닉네임" name="nickname" id="nickname" class="text_area">
+                    <input type="text" placeholder="이메일" name ='email' id="email" class="text_area">
+                    <input type="text" placeholder="비밀번호" name="password" id="password" class="text_area">
+                    <input type="text" placeholder="비밀번호 확인" id="password_check" class="text_area">
+                    <div class="text_area">
+                        <p id="error_text">* 비밀번호가 일치하지 않습니다</p>
+                    </div>
+                    <input type="submit" value="확인" id="signup_btn" class='text_area'>
+                </form>
             </div>
         </div>
+
         
     </body>
 </html>

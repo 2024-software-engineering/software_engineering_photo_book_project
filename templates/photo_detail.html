@@ -28,8 +28,9 @@
         <div id='photo_detail_container'>
             <div class="photo_detail">
                 <p class="author">{{ item['author'] }}</p>
+                <p class="line"></p>
                 <button class='item_btn' onclick='location.href="{{ url_for("modify_page", photo_id=item["id"]) }}"'>수정</button>
-                <p class="keyword">{{ item['keywords'] }}</p>
+                <p class="keyword"><span class="keyword-item">{{ item['keywords'] }}</span></p>
                 <p class="description">{{ item['description'] }}</p>
             </div>
         </div>
@@ -44,6 +45,7 @@
             {% for dm in dms %}
             <div class="user_msg_container {% if dm[4] %}reply_msg_container{% endif %}" id="msg_{{ dm[0] }}">
                 <p class="user_name">{{ dm[2] }}</p>
+                <p class="mini_line"></p>
                 <p class="direct_msg">{{ dm[1] }}</p>
                 <button class='reply_btn' onclick="showReplyForm({{ dm[0] }})">응답</button>
                 {% if dm[3] == session['user_id'] %}
@@ -79,11 +81,13 @@
                 replyInput.style.width = '450px';
                 replyInput.style.height = '77px';
                 replyInput.style.fontSize = '15px';
+                replyInput.style.fontFamily = 'Pretendard-Regular';
     
                 const replyButton = replyContainer.querySelector('button');
                 replyButton.style.marginRight = '20px';
                 replyButton.style.display = 'block';
-                replyButton.style.fontSize = '15px';
+                replyButton.style.fontSize = '14px';
+                replyButton.style.fontFamily = 'Pretendard-Regular';
                 replyButton.style.backgroundColor = 'black';
                 replyButton.style.color = 'white';
                 replyButton.style.textAlign = 'center';
