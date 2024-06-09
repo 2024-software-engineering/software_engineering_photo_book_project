@@ -80,10 +80,11 @@ def photo_detail(item_id):
         photo = cur.fetchone()
 
         cur.execute('''
-            SELECT DM_table.DM_ID, DM_table.DM_msg, user_table.user_nickname, DM_table.user_ID
+            SELECT DM_table.DM_ID, DM_table.DM_msg, user_table.user_nickname, DM_table.user_ID, DM_table.parent_ID
             FROM DM_table
             JOIN user_table ON DM_table.user_ID = user_table.ID
             WHERE DM_table.photo_ID = ?
+            ORDER BY DM_table.DM_ID ASC
         ''', (item_id,))
         dms = cur.fetchall()
 
@@ -92,6 +93,17 @@ def photo_detail(item_id):
     keywords = photo[2] if photo[2] is not None else ''
     keywords_list = keywords.split(',')
     formatted_keywords = ' '.join([f'# {kw.strip()}' for kw in keywords_list])
+
+    dms_with_parent = []
+    for dm in dms:
+        parent_user_name = None
+        if dm[4]:  # parent_ID가 있는 경우
+            cur.execute('SELECT user_nickname FROM user_table WHERE ID = (SELECT user_ID FROM DM_table WHERE DM_ID = ?)', (dm[4],))
+            parent_user_name_result = cur.fetchone()
+            if parent_user_name_result:
+                parent_user_name = parent_user_name_result[0]
+        dms_with_parent.append((dm[0], dm[1], dm[2], dm[3], dm[4], parent_user_name))
+
 
     item = {
     'id': item_id,
@@ -102,7 +114,7 @@ def photo_detail(item_id):
     'is_user': is_user
     }
 
-    return render_template('photo_detail.html', item=item, dms=dms)
+    return render_template('photo_detail.html', item=item, dms=dms_with_parent)
 
 
 # DM 메시지 저장
@@ -114,15 +126,34 @@ def msg_send():
     user_id = session['user_id']
     dm_msg = request.form['msg']
     photo_id = request.form['photo_id']
+    parent_id = request.form['parent_id']
 
     with sqlite3.connect('photo_album.db') as con:
         cur = con.cursor()
+        
+        # 부모 메시지의 사용자 이름을 찾습니다.
+        parent_user_name = None
+        if parent_id:
+            # 부모 메시지의 DM_ID를 기준으로 user_ID를 조회합니다.
+            cur.execute('SELECT user_ID FROM DM_table WHERE DM_ID = ?', (parent_id,))
+            parent_user_result = cur.fetchone()
+            if parent_user_result:
+                parent_user_id = parent_user_result[0]
+                # 사용자 ID를 기반으로 사용자 이름을 조회합니다.
+                cur.execute('SELECT user_nickname FROM user_table WHERE ID = ?', (parent_user_id,))
+                parent_user_name_result = cur.fetchone()
+                if parent_user_name_result:
+                    parent_user_name = parent_user_name_result[0]
+
         cur.execute('''
-            INSERT INTO DM_table (user_ID, photo_ID, DM_msg) VALUES (?, ?, ?)
-        ''', (user_id, photo_id, dm_msg))
+            INSERT INTO DM_table (user_ID, photo_ID, DM_msg, parent_ID) VALUES (?, ?, ?, ?)
+        ''', (user_id, photo_id, dm_msg, parent_id if parent_id else None))
         con.commit()
 
-    return redirect(url_for('photo_detail', item_id=photo_id))
+    # 메시지를 보낸 후, 사진의 상세 페이지로 리디렉션합니다.
+    return redirect(url_for('photo_detail', item_id=photo_id, parent_user_name=parent_user_name))
+
+
 
 # DM 삭제
 @app.route('/delete_dm/<int:dm_id>', methods=['POST'])

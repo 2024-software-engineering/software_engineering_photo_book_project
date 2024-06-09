@@ -49,6 +49,10 @@
                 <p class="user_name">{{ dm[2] }}</p>
                 <p class="mini_line"></p>
                 <p class="direct_msg">{{ dm[1] }}</p>
+                <!-- 답장의 경우 부모 메시지의 사용자 이름을 표시합니다. -->
+                {% if dm[5] %}
+                <p class="reply_to">Reply to "{{ dm[5] }}"</p>
+                {% endif %}
                 <button class='reply_btn' onclick="showReplyForm({{ dm[0] }})">응답</button>
                 {% if dm[3] == session['user_id'] %}
                 <form action="{{ url_for('delete_dm', dm_id=dm[0]) }}" method="POST" style="display:inline;">
@@ -65,7 +69,7 @@
                     <button>SEND</button>
                 </form>
             </div>
-            {% endfor %}
+        {% endfor %}
         </div>
     </div>
     <script>
