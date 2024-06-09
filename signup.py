@@ -126,7 +126,7 @@ def msg_send():
     user_id = session['user_id']
     dm_msg = request.form['msg']
     photo_id = request.form['photo_id']
-    parent_id = request.form['parent_id']
+    parent_id = request.form.get('parent_id')
 
     with sqlite3.connect('photo_album.db') as con:
         cur = con.cursor()
@@ -134,12 +134,10 @@ def msg_send():
         # 부모 메시지의 사용자 이름을 찾습니다.
         parent_user_name = None
         if parent_id:
-            # 부모 메시지의 DM_ID를 기준으로 user_ID를 조회합니다.
             cur.execute('SELECT user_ID FROM DM_table WHERE DM_ID = ?', (parent_id,))
             parent_user_result = cur.fetchone()
             if parent_user_result:
                 parent_user_id = parent_user_result[0]
-                # 사용자 ID를 기반으로 사용자 이름을 조회합니다.
                 cur.execute('SELECT user_nickname FROM user_table WHERE ID = ?', (parent_user_id,))
                 parent_user_name_result = cur.fetchone()
                 if parent_user_name_result:
@@ -147,11 +145,11 @@ def msg_send():
 
         cur.execute('''
             INSERT INTO DM_table (user_ID, photo_ID, DM_msg, parent_ID) VALUES (?, ?, ?, ?)
-        ''', (user_id, photo_id, dm_msg, parent_id if parent_id else None))
+        ''', (user_id, photo_id, dm_msg, parent_id))
         con.commit()
 
-    # 메시지를 보낸 후, 사진의 상세 페이지로 리디렉션합니다.
     return redirect(url_for('photo_detail', item_id=photo_id, parent_user_name=parent_user_name))
+
 
 
 
@@ -232,7 +230,7 @@ def upload():
     keywords = request.form['keywords']
     description = request.form['description']
 
-    keywords = json.loads(keywords)  # Convert JSON string back to list
+    keywords = json.loads(keywords) 
 
     photo_path = f'static/uploads/{photo.filename}'
     photo.save(photo_path)
