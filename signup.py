@@ -42,7 +42,7 @@ def create_user():
             if con:
                 con.close()
 
-    return render_template("login_page.html")
+    return redirect(url_for('loginpage'))
 
 #로그인 구현
 @app.route('/login',methods=['POST','GET'])
@@ -149,9 +149,6 @@ def msg_send():
         con.commit()
 
     return redirect(url_for('photo_detail', item_id=photo_id, parent_user_name=parent_user_name))
-
-
-
 
 # DM 삭제
 @app.route('/delete_dm/<int:dm_id>', methods=['POST'])
@@ -261,21 +258,23 @@ def upload():
 @app.route('/photo_modify/<int:photo_id>', methods=['GET', 'POST'])
 def modify_page(photo_id):
     if request.method == 'POST':
-        description = request.form['description']
-        keywords = json.loads(request.form['keywords'])
+
+        # 키워드와 설명을 폼 데이터에서 정확히 추출
+        description = request.form.get('description')
+        keywords = json.loads(request.form.get('keywords'))
         photo_file = request.files.get('photo')
 
         with sqlite3.connect('photo_album.db') as con:
             cur = con.cursor()
 
-            # Update photo description
+            # 사진 설명 업데이트
             cur.execute('''
                 UPDATE photo_table
                 SET photo_describ = ?
                 WHERE photo_ID = ?
             ''', (description, photo_id))
 
-            # Update photo image if a new image is uploaded
+            # 새로운 사진이 업로드된 경우 사진 경로 업데이트
             if photo_file:
                 photo_path = f'uploads/{photo_file.filename}'
                 photo_file.save(f'static/{photo_path}')
@@ -285,13 +284,13 @@ def modify_page(photo_id):
                     WHERE photo_ID = ?
                 ''', (photo_path, photo_id))
 
-            # Delete existing keywords
+            # 기존 키워드 삭제
             cur.execute('''
                 DELETE FROM photo_keyword_table
                 WHERE photo_ID = ?
             ''', (photo_id,))
 
-            # Insert new keywords
+            # 새로운 키워드 삽입
             for keyword in keywords:
                 cur.execute('''
                     INSERT INTO photo_keyword_table (photo_ID, keyword)
