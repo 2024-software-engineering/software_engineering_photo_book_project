@@ -11,7 +11,7 @@
     <div id="container">
         <div id='topbar_container'>
             <div class="topbar_btn_container"><button class='topbar_btn' onclick="location.href='{{ url_for('mainpage') }}'">Photo</button></div>
-            <div class="topbar_btn_container"><button class='topbar_btn' onclick="location.href='{{ url_for('upload_page') }}'">Upload</button></div>
+            <div class="topbar_btn_container"><button class='topbar_btn' onclick="location.href='{{ url_for('photo_upload') }}'">Upload</button></div>
             <div class="topbar_btn_container"><button class='topbar_btn' onclick="location.href='{{ url_for('dm_list') }}'">DM</button></div>
             <div id="keyword_container">
                 <form action="search_keyword" method="POST">
@@ -28,8 +28,11 @@
         <div id='photo_detail_container'>
             <div class="photo_detail">
                 <p class="author">{{ item['author'] }}</p>
-                <button class='item_btn' onclick='location.href="{{ url_for("modify_page", photo_id=item["id"]) }}"'>수정</button>
-                <p class="keyword">{{ item['keywords'] }}</p>
+                <p class="line"></p>
+                {% if item['is_user'] %}
+                    <button class='item_btn' onclick='location.href="{{ url_for("modify_page", photo_id=item["id"]) }}"'>수정</button>
+                {% endif %}
+                <p class="keyword"><span class="keyword-item">{{ item['keywords'] }}</span></p>
                 <p class="description">{{ item['description'] }}</p>
             </div>
         </div>
@@ -44,7 +47,12 @@
             {% for dm in dms %}
             <div class="user_msg_container {% if dm[4] %}reply_msg_container{% endif %}" id="msg_{{ dm[0] }}">
                 <p class="user_name">{{ dm[2] }}</p>
+                <p class="mini_line"></p>
                 <p class="direct_msg">{{ dm[1] }}</p>
+                <!-- 답장의 경우 부모 메시지의 사용자 이름을 표시합니다. -->
+                {% if dm[5] %}
+                <p class="reply_to">Reply to "{{ dm[5] }}"</p>
+                {% endif %}
                 <button class='reply_btn' onclick="showReplyForm({{ dm[0] }})">응답</button>
                 {% if dm[3] == session['user_id'] %}
                 <form action="{{ url_for('delete_dm', dm_id=dm[0]) }}" method="POST" style="display:inline;">
@@ -61,13 +69,36 @@
                     <button>SEND</button>
                 </form>
             </div>
-            {% endfor %}
+        {% endfor %}
         </div>
     </div>
     <script>
         function showReplyForm(dmId) {
             const replyContainer = document.getElementById(`reply_container_${dmId}`);
-            replyContainer.style.display = replyContainer.style.display === 'none' ? 'block' : 'none';
+            const isHidden = replyContainer.style.display === 'none';
+    
+            replyContainer.style.display = isHidden ? 'block' : 'none';
+    
+            if (isHidden) {
+                const replyInput = replyContainer.querySelector('input[name="msg"]');
+                replyInput.style.margin = '10px';
+                replyInput.style.width = '450px';
+                replyInput.style.height = '77px';
+                replyInput.style.fontSize = '15px';
+                replyInput.style.fontFamily = 'Pretendard-Regular';
+    
+                const replyButton = replyContainer.querySelector('button');
+                replyButton.style.marginRight = '20px';
+                replyButton.style.display = 'block';
+                replyButton.style.fontSize = '14px';
+                replyButton.style.fontFamily = 'Pretendard-Regular';
+                replyButton.style.backgroundColor = 'black';
+                replyButton.style.color = 'white';
+                replyButton.style.textAlign = 'center';
+                replyButton.style.border = '0px';
+                replyButton.style.width = '60px';
+                replyButton.style.height = '30px';
+            }
         }
     </script>
 </body>
