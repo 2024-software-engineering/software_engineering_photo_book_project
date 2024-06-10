@@ -11,7 +11,7 @@
     <div id="container">
         <div id='topbar_container'>
             <div class="topbar_btn_container"><button class='topbar_btn' onclick="location.href='{{ url_for('mainpage') }}'">Photo</button></div>
-            <div class="topbar_btn_container"><button class='topbar_btn' onclick="location.href='{{ url_for('upload_page') }}'">Upload</button></div>
+            <div class="topbar_btn_container"><button class='topbar_btn' onclick="location.href='{{ url_for('photo_upload') }}'">Upload</button></div>
             <div class="topbar_btn_container"><button class='topbar_btn' onclick="location.href='{{ url_for('dm_list') }}'">DM</button></div>
             <div id="keyword_container">
                 <form action="search_keyword" method="POST">
@@ -30,14 +30,15 @@
                     <div id='photo_detail_container'>
                         <div class="photo_detail">
                             <p class="author">{{ session['user_nickname'] }}</p>
+                            <p class="line"></p>
                             <div class="photo_text_container">
                                 <p class="input_text">키워드 입력</p>
+                                <input type="text" id="key" name="key" placeholder="enter keyword">
                                 <div id="keywordList">
                                     {% for keyword in keywords %}
-                                        <span class="keyword_box">{{ keyword }}<button type="button" class="delete_btn" onclick="removeKeyword(this)">x</button></span>
+                                        <span class="keyword_box" id="existingKeyword">{{ keyword }}</span>
                                     {% endfor %}
                                 </div>
-                                <input type="text" id="key" name="key" placeholder="enter keyword">
                                 <p class="input_text">설명 입력</p>
                                 <input type="text" id="des" name="des" placeholder="enter description" value="{{ description }}">
                             </div>
@@ -61,7 +62,7 @@
                 container.innerHTML = ''; 
                 container.appendChild(newImage);
             }
-
+    
             document.getElementById('key').addEventListener('keypress', function(event) {
                 if (event.key === 'Enter') {
                     event.preventDefault();
@@ -71,6 +72,8 @@
                         var newKeyword = document.createElement('span'); 
                         newKeyword.textContent = keyword;
                         newKeyword.classList.add('keyword_box');
+                        setKeywordStyle(newKeyword);
+                        
                         var deleteBtn = document.createElement('button');
                         deleteBtn.textContent = 'x';
                         deleteBtn.classList.add('delete_btn');
@@ -83,17 +86,43 @@
                     }
                 }
             });
-
+    
+            function setKeywordStyle(keywordElement) {
+                keywordElement.style.marginRight = '8px';
+                keywordElement.style.backgroundColor = 'lightgrey';
+                keywordElement.style.padding = '3px 6px';
+                keywordElement.style.borderRadius = '5px';
+                keywordElement.style.fontFamily = 'Pretendard-Regular';
+                keywordElement.style.fontSize = '17px';
+                keywordElement.style.display = 'inline-flex';
+                keywordElement.style.alignItems = 'center';
+            }
+    
+            window.onload = function() {
+                var existingKeywords = document.querySelectorAll('.keyword_box');
+                existingKeywords.forEach(function(keyword) {
+                    setKeywordStyle(keyword);
+                    
+                    var deleteBtn = document.createElement('button');
+                    deleteBtn.textContent = 'x';
+                    deleteBtn.classList.add('delete_btn');
+                    deleteBtn.onclick = function() {
+                        keyword.parentNode.removeChild(keyword);
+                    };
+                    keyword.appendChild(deleteBtn);
+                });
+            };
+    
             document.getElementById('upload_btn').addEventListener('click', function() {
-                var keywords = Array.from(document.querySelectorAll('.keyword_box')).map(span => span.childNodes[0].nodeValue.trim());
+                var keywords = Array.from(document.querySelectorAll('.keyword_box')).map(span => span.textContent.replace('x', '').trim());
                 var description = document.getElementById('des').value.trim();
                 var fileInput = document.getElementById('fileInput');
-
+    
                 var formData = new FormData(document.getElementById('photoForm'));
                 formData.append('keywords', JSON.stringify(keywords));
                 formData.append('description', description);
                 formData.append('photo_id', "{{ photo_id }}"); 
-
+    
                 fetch('{{ url_for("modify_page", photo_id=photo_id) }}', {
                     method: 'POST',
                     body: formData
@@ -110,7 +139,7 @@
                     console.error('Error:', error);
                 });
             });
-
+    
             function removeKeyword(element) {
                 var keywordBox = element.parentElement;
                 keywordBox.remove();

@@ -4,15 +4,14 @@
         <link rel="stylesheet" href="../static/mainpage.css" />
     </head>
     <body>
-        <!-- <script src="../static/login_page.js"></script> -->
         <div id = 'top'>ENJOY YOUR PHOTO BOOK</div>
         <div id="container">
             <div id = 'sidebar_container'>
                 <div class="sidebar_btn_container"><button class='sidebar_btn' onclick="location.href='{{ url_for('mainpage') }}'">Photo</button></div>                
-                <div class="sidebar_btn_container"><button class='sidebar_btn' onclick="location.href='{{ url_for('upload_page') }}'">Upload</button></div>
+                <div class="sidebar_btn_container"><button class='sidebar_btn' onclick="location.href='{{ url_for('photo_upload') }}'">Upload</button></div>
                 <div class="sidebar_btn_container"><button class='sidebar_btn' onclick="location.href='{{ url_for('dm_list') }}'">DM</button></div>
                 <div id ='connecting_user_container'>
-                    <div class="userlist">user list</div>
+                    <div class="userlist_sub"> [ User List ]</div>
                     {% for signupuser in signupuserlist%}
                     <div class="userlist">{{signupuser[0]}}</div>
                     {% endfor %}
@@ -26,7 +25,7 @@
                     <img id = 'camera_img' src="{{ url_for('static', filename='assets/camera.png') }}">
                 </div>
                 <div id="keyword_container">
-                    <form action="search_keyword" method="POST">
+                    <form action="{{ url_for('mainpage') }}" method="POST">
                         <input type="text" id="keyword" name="keyword" placeholder="검색">
                         <button id="search_btn"><img id='search_img' src="{{ url_for('static', filename='assets/search.png') }}"></button>
                     </form>
@@ -35,10 +34,15 @@
                 <div id="item_container">
                     {% for photo in photos %}
                     <div class ='item'>
-                        <a href="{{ url_for('photo_detail', item_id=photo[0]) }}">
+                        <a class="item_link" href="{{ url_for('photo_detail', item_id=photo[0]) }}">
                             <img class='photo_img' src="{{ url_for('static', filename=photo[1]) }}">
                             <p class="author">{{ photo[2] }}</p>
-                            <p class="keyword">{{ photo[3] }}</p>
+                            <p class="line"></p>
+                            <p class="keyword">
+                                {% for kw in photo[3].split(",") %}
+                                    <span class="keyword-item">{{ kw|trim|safe }}</span>
+                                {% endfor %}
+                            </p>
                             <p class="description">{{ photo[4] }}</p>
                         </a>
                     </div>

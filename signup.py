@@ -18,6 +18,7 @@ def loginpage():
 
     return render_template('login_page.html',signupuserlist=signupuserlist)
 
+#회원가입 페이지로 렌더링
 @app.route('/signup_page')
 def signup_page():
     return render_template('signup_page.html')
@@ -40,7 +41,8 @@ def create_user():
         finally:
             if con:
                 con.close()
-            return render_template("login_page.html")
+
+    return redirect(url_for('loginpage'))
 
 #로그인 구현
 @app.route('/login',methods=['POST','GET'])
@@ -68,7 +70,7 @@ def photo_detail(item_id):
         cur = con.cursor()
 
         cur.execute('''
-            SELECT photo_table.photo_img, user_table.user_nickname, GROUP_CONCAT(photo_keyword_table.keyword), photo_table.photo_describ
+            SELECT photo_table.photo_img, user_table.user_nickname, GROUP_CONCAT(photo_keyword_table.keyword), photo_table.photo_describ, photo_table.user_ID
             FROM photo_table
             JOIN user_table ON photo_table.user_ID = user_table.ID
             LEFT JOIN photo_keyword_table ON photo_table.photo_ID = photo_keyword_table.photo_ID
@@ -78,22 +80,42 @@ def photo_detail(item_id):
         photo = cur.fetchone()
 
         cur.execute('''
-            SELECT DM_table.DM_ID, DM_table.DM_msg, user_table.user_nickname, DM_table.user_ID
+            SELECT DM_table.DM_ID, DM_table.DM_msg, user_table.user_nickname, DM_table.user_ID, DM_table.parent_ID
             FROM DM_table
             JOIN user_table ON DM_table.user_ID = user_table.ID
             WHERE DM_table.photo_ID = ?
+            ORDER BY DM_table.DM_ID ASC
         ''', (item_id,))
         dms = cur.fetchall()
 
+        is_user = 'user_id' in session and session['user_id'] == photo[4]
+
+    keywords = photo[2] if photo[2] is not None else ''
+    keywords_list = keywords.split(',')
+    formatted_keywords = ' '.join([f'# {kw.strip()}' for kw in keywords_list])
+
+    dms_with_parent = []
+    for dm in dms:
+        parent_user_name = None
+        if dm[4]:  # parent_ID가 있는 경우
+            cur.execute('SELECT user_nickname FROM user_table WHERE ID = (SELECT user_ID FROM DM_table WHERE DM_ID = ?)', (dm[4],))
+            parent_user_name_result = cur.fetchone()
+            if parent_user_name_result:
+                parent_user_name = parent_user_name_result[0]
+        dms_with_parent.append((dm[0], dm[1], dm[2], dm[3], dm[4], parent_user_name))
+
+
     item = {
-        'id': item_id,
-        'author': photo[1],
-        'keywords': ' '.join([f'#{kw}' for kw in photo[2].split(',')]),
-        'description': photo[3],
-        'img_src': photo[0]
+    'id': item_id,
+    'author': photo[1],
+    'keywords': formatted_keywords,
+    'description': photo[3],
+    'img_src': photo[0],
+    'is_user': is_user
     }
 
-    return render_template('photo_detail.html', item=item, dms=dms)
+    return render_template('photo_detail.html', item=item, dms=dms_with_parent)
+
 
 # DM 메시지 저장
 @app.route('/msg_send', methods=['POST'])
@@ -104,15 +126,30 @@ def msg_send():
     user_id = session['user_id']
     dm_msg = request.form['msg']
     photo_id = request.form['photo_id']
+    parent_id = request.form.get('parent_id')
 
     with sqlite3.connect('photo_album.db') as con:
         cur = con.cursor()
+        
+        # 부모 메시지의 사용자 이름을 찾습니다.
+        parent_user_name = None
+        if parent_id:
+            cur.execute('SELECT user_ID FROM DM_table WHERE DM_ID = ?', (parent_id,))
+            parent_user_result = cur.fetchone()
+            if parent_user_result:
+                parent_user_id = parent_user_result[0]
+                cur.execute('SELECT user_nickname FROM user_table WHERE ID = ?', (parent_user_id,))
+                parent_user_name_result = cur.fetchone()
+                if parent_user_name_result:
+                    parent_user_name = parent_user_name_result[0]
+
         cur.execute('''
-            INSERT INTO DM_table (user_ID, photo_ID, DM_msg) VALUES (?, ?, ?)
-        ''', (user_id, photo_id, dm_msg))
+            INSERT INTO DM_table (user_ID, photo_ID, DM_msg, parent_ID) VALUES (?, ?, ?, ?)
+        ''', (user_id, photo_id, dm_msg, parent_id))
         con.commit()
 
-    return redirect(url_for('photo_detail', item_id=photo_id))
+    return redirect(url_for('photo_detail', item_id=photo_id, parent_user_name=parent_user_name))
+
 
 # DM 삭제
 @app.route('/delete_dm/<int:dm_id>', methods=['POST'])
@@ -131,29 +168,55 @@ def delete_dm(dm_id):
     return redirect(url_for('photo_detail', item_id=photo_id))
 
 #업로드 페이지로 렌더링
-@app.route('/upload_page')
-def upload_page():
+@app.route('/upload')
+def photo_upload():
     user_nickname = session['user_nickname']
     return render_template('photo_upload.html', user_nickname=user_nickname)
 
-@app.route('/mainpage')
+@app.route('/mainpage', methods=['GET', 'POST'])
 def mainpage():
+    keyword = request.form.get('keyword', '')
+
     with sqlite3.connect('photo_album.db') as con:
         cur = con.cursor()
-        cur.execute('''
-            SELECT photo_table.photo_ID, photo_table.photo_img, user_table.user_nickname, 
-                GROUP_CONCAT(photo_keyword_table.keyword), photo_table.photo_describ
-            FROM photo_table
-            JOIN user_table ON photo_table.user_ID = user_table.ID
-            LEFT JOIN photo_keyword_table ON photo_table.photo_ID = photo_keyword_table.photo_ID
-            GROUP BY photo_table.photo_ID
-        ''')
+        if keyword:
+            cur.execute('''
+                SELECT photo_table.photo_ID, photo_table.photo_img, user_table.user_nickname, 
+                    GROUP_CONCAT(photo_keyword_table.keyword), photo_table.photo_describ
+                FROM photo_table
+                JOIN user_table ON photo_table.user_ID = user_table.ID
+                LEFT JOIN photo_keyword_table ON photo_table.photo_ID = photo_keyword_table.photo_ID
+                GROUP BY photo_table.photo_ID
+                HAVING GROUP_CONCAT(photo_keyword_table.keyword) LIKE ?
+            ''', ('%' + keyword + '%',))
+        else:
+            cur.execute('''
+                SELECT photo_table.photo_ID, photo_table.photo_img, user_table.user_nickname, 
+                    GROUP_CONCAT(photo_keyword_table.keyword), photo_table.photo_describ
+                FROM photo_table
+                JOIN user_table ON photo_table.user_ID = user_table.ID
+                LEFT JOIN photo_keyword_table ON photo_table.photo_ID = photo_keyword_table.photo_ID
+                GROUP BY photo_table.photo_ID
+            ''')
         photos = cur.fetchall()
 
         cur.execute('''select user_nickname from user_table''')
         signupuserlist = cur.fetchall()
 
-    return render_template('mainpage.html', photos=photos, signupuserlist=signupuserlist)
+    # 검색된 키워드 강조 처리
+    highlighted_photos = []
+    for photo in photos:
+        keywords = photo[3].split(',') if photo[3] is not None else []
+        keywords = [kw.strip() for kw in keywords]
+        highlighted_keywords = ', '.join([
+            f'<span class="highlight"># {kw}</span>' if keyword and keyword in kw else f'# {kw}'
+            for kw in keywords
+        ])
+        highlighted_photos.append((photo[0], photo[1], photo[2], highlighted_keywords, photo[4]))
+
+
+    return render_template('mainpage.html', photos=highlighted_photos, keyword=keyword, signupuserlist=signupuserlist)
+
 
 @app.route('/upload_page', methods=['POST'])
 def upload():
@@ -193,28 +256,25 @@ def upload():
 
     return jsonify({'success': True})
 
-#사진수정하기
-
-
 @app.route('/photo_modify/<int:photo_id>', methods=['GET', 'POST'])
 def modify_page(photo_id):
     if request.method == 'POST':
-        # Get the form data from the request
-        description = request.form['description']
-        keywords = json.loads(request.form['keywords'])
+        # 키워드와 설명을 폼 데이터에서 정확히 추출
+        description = request.form.get('description')
+        keywords = json.loads(request.form.get('keywords'))
         photo_file = request.files.get('photo')
 
         with sqlite3.connect('photo_album.db') as con:
             cur = con.cursor()
 
-            # Update photo description
+            # 사진 설명 업데이트
             cur.execute('''
                 UPDATE photo_table
                 SET photo_describ = ?
                 WHERE photo_ID = ?
             ''', (description, photo_id))
 
-            # Update photo image if a new image is uploaded
+            # 새로운 사진이 업로드된 경우 사진 경로 업데이트
             if photo_file:
                 photo_path = f'uploads/{photo_file.filename}'
                 photo_file.save(f'static/{photo_path}')
@@ -224,13 +284,13 @@ def modify_page(photo_id):
                     WHERE photo_ID = ?
                 ''', (photo_path, photo_id))
 
-            # Delete existing keywords
+            # 기존 키워드 삭제
             cur.execute('''
                 DELETE FROM photo_keyword_table
                 WHERE photo_ID = ?
             ''', (photo_id,))
 
-            # Insert new keywords
+            # 새로운 키워드 삽입
             for keyword in keywords:
                 cur.execute('''
                     INSERT INTO photo_keyword_table (photo_ID, keyword)
@@ -272,11 +332,53 @@ def modify_page(photo_id):
                             keywords=keywords)
 
 
-
-
+#dm_list 불러오기
 @app.route('/dm_list')
 def dm_list():
-    return render_template('dm_list.html')
+    user_nickname = session['user_nickname']
+    
+    with sqlite3.connect('photo_album.db') as con:
+        con.row_factory = sqlite3.Row
+        cur = con.cursor()
+        # 최신 DM 정보만 선택 및 로그인한 사용자의 게시물만 선택
+        cur.execute('''
+            WITH LatestDM AS (
+                SELECT 
+                    photo_ID, 
+                    MAX(DM_ID) AS MaxDMID
+                FROM 
+                    DM_table
+                GROUP BY 
+                    photo_ID
+            )
+            SELECT 
+                p.photo_ID, 
+                p.photo_img, 
+                u.user_nickname, 
+                dm_sender.user_nickname || ':' || d.DM_msg AS dm_info
+            FROM 
+                photo_table p
+            JOIN 
+                user_table u ON p.user_ID = u.ID
+            LEFT JOIN 
+                LatestDM ldm ON p.photo_ID = ldm.photo_ID
+            LEFT JOIN 
+                DM_table d ON ldm.MaxDMID = d.DM_ID
+            LEFT JOIN 
+                user_table dm_sender ON d.user_ID = dm_sender.ID
+            WHERE 
+                u.user_nickname = ?
+            ORDER BY 
+                d.DM_ID DESC
+        ''', (user_nickname,))
+        lists = cur.fetchall()
+
+        cur.execute('''select user_nickname from user_table''')
+        signupuserlist = cur.fetchall()
+
+    return render_template('dm_list.html', user_nickname=user_nickname, lists=lists, signupuserlist=signupuserlist)
+
+
 
 if __name__ == '__main__':
     app.run(debug=True)

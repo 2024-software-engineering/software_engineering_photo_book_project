@@ -1,5 +1,11 @@
+@font-face {
+    font-family: 'Pretendard-Regular';
+    src: url('https://fastly.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.woff') format('woff');
+    font-weight: 400;
+    font-style: normal;
+}
 body {
-	font-family: 'Noto Sans KR', sans-serif;
+    font-family: 'Pretendard-Regular';
 }
 #top{
     display: flex;
@@ -8,6 +14,7 @@ body {
     background-color: #272424;
     color : #FFFFFF;
     height: 62px;
+    font-size : 20px;
 }
 #container{
     display: grid;
@@ -34,7 +41,16 @@ body {
     color:black;
     background-color: #FFFFFF;
     border:0px;
-    font-size: 23px;
+    font-size: 25px;
+    font-family: 'Pretendard-Regular';
+}
+.userlist_sub{
+    display: flex;
+    justify-content: center;
+    color:#FFFFFF;
+    background-color: #272424;
+    font-size: 22px;
+    padding: 5px; 
 }
 .userlist{
     display: flex;
@@ -78,7 +94,7 @@ form {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    width: 100%;    
+    width: 100%;
 }
 input{
     font-size: 24px;
@@ -86,10 +102,12 @@ input{
 input::placeholder {
     font-size: 24px;
     padding-left: 10px;
+    font-family: 'Pretendard-Regular';
 }
 .text_area{
     width: 831px;
     height: 80px;
+    margin:5px;
 }
 #error_text{
     align-self: flex-start;
@@ -99,7 +117,8 @@ input::placeholder {
     background-color: #FFFFFF;
     border:1px solid #272424;
     font-size: 30px;
-    color:black;
+    color:#272424;
+    font-family: 'Pretendard-Regular';
 }
 #sign_up_container{
     display: flex;
@@ -110,8 +129,9 @@ input::placeholder {
     margin-top: 10px;
     background-color: #FFFFFF;
     border:0px;
-    font-size: 25px;
+    font-size: 22px;
     color:#565656;
+    font-family: 'Pretendard-Regular';
 }
 #sign_up_btn:hover{
     text-decoration: underline;

@@ -1,5 +1,11 @@
+@font-face {
+    font-family: 'Pretendard-Regular';
+    src: url('https://fastly.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.woff') format('woff');
+    font-weight: 400;
+    font-style: normal;
+}
 body {
-	font-family: 'Noto Sans KR', sans-serif;
+    font-family: 'Pretendard-Regular';
 }
 #top{
     display: flex;
@@ -48,6 +54,7 @@ body {
     background-color: #FFFFFF;
     border:0px;
     font-size: 23px;
+    font-family: 'Pretendard-Regular';
 }
 #keyword_container{
     margin-left: auto;
@@ -60,16 +67,17 @@ body {
 }
 #keyword{
     border-radius: 50px;
-    width: 270px;
-    height: 40px;
-    font-size: 20px;
-    padding-left: 16px;
+    width: 278px;
+    height: 44px;
+    font-size: 22px;
+    padding-left: 20px;
 }
 input::placeholder {
     display: flex;
     align-items: center;
     font-size: 20px;
     padding-left: 10px;
+    font-family: 'Pretendard-Regular';
 }
 #search_img{
     width:44px;
@@ -120,7 +128,17 @@ form{
     top: 60px;
     left: 0;
     font-size: 50px;
-    font-weight: 600;
+    font-weight: 650;
+}
+
+.line{
+    position: absolute;
+    top: 170px;
+    left: 0;
+    content: "";
+    background-color: #272424;
+    height: 1px;
+    width: 600px;
 }
 
 .item_btn{
@@ -132,6 +150,7 @@ form{
     font-style: #808080;
     background-color: transparent;
     border: 0;
+    font-family: 'Pretendard-Regular';
 }
 
 .keyword{
@@ -141,10 +160,12 @@ form{
     font-size: 18px;
     font-weight: 400;
 }
-
+.keyword-item{
+    margin-right:5px;
+}
 .description{
     position: absolute;
-    top : 270px;
+    top : 260px;
     left: 0;
     font-size: 18px;
     font-weight: 400;
@@ -153,7 +174,7 @@ form{
 #msg_container{
     margin-top: 210px;
     margin-right: 100px;
-    border: #2b2b2b;
+    border: #272424;
     border-style: solid;
     border-width: 1px;
     min-height: 640px;
@@ -174,6 +195,7 @@ form{
 input::placeholder {
     display: flex;
     font-size: 15px;
+    font-family: 'Pretendard-Regular';
 }
 
 #send_btn{
@@ -186,9 +208,10 @@ input::placeholder {
     border: 0px;
     width: 80px;
     height: 40px;
+    font-family: 'Pretendard-Regular';
 }
 
-.user_msg_container{
+.user_msg_container {
     display: flex;
     position: relative;
     margin-left: 30px;
@@ -198,49 +221,80 @@ input::placeholder {
     border-style: solid;
     border-width: 1px;
     width: 550px;
-    height : 120px;
+    height: 120px;
 }
-.user_name{
+
+.user_name {
     position: absolute;
-    top: 5px;
+    top: 2px;
     margin-left: 25px;
-    font-size: 18px;
+    font-size: 20px;
     font-weight: 600;
 }
-.direct_msg{
+
+.mini_line{
     position: absolute;
-    top: 50px;
-    margin-left: 25px;
-    font-size: 15px;
+    top: 43px;
+    left: 0;
+    margin-left: 20px;
+    content: "";
+    background-color: #272424;
+    height: 1px;
+    width: 510px;
 }
+
+.direct_msg {
+    position: absolute;
+    top: 60px;
+    margin-left: 35px;
+    font-size: 16px;
+}
+
 .reply_btn {
     position: absolute;
-    top: 10px;
-    right: 50px;
-    font-size: 15px;
+    top: 14px;
+    right: 56px;
+    font-size: 14px;
     color: #808080;
     background-color: transparent;
     border: 0;
+    font-family: 'Pretendard-Regular';
 }
+
 .delete_btn {
     position: absolute;
-    top: 10px;
-    right: 10px;
-    font-size: 15px;
+    top: 14px;
+    right: 18px;
+    font-size: 14px;
     color: #808080;
     background-color: transparent;
     border: 0;
+    font-family: 'Pretendard-Regular';
 }
 
 .reply_container {
-    margin-left: 50px;
-    margin-top: 20px;
+    display: none;
+    margin: 0 auto;
+    width: 450px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.reply_to{
+    margin-left: 20px;
+    display: flex;
+    position: absolute;
+    top:17px;
+    left: 60px;
+    font-size: 13px;
 }
 
 .reply_msg_container {
     display: flex;
     position: relative;
-    margin-left: 80px;
+    margin-left: 30px;
     margin-top: 20px;
     margin-bottom: 20px;
     border: #2b2b2b;

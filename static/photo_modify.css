@@ -1,5 +1,11 @@
+@font-face {
+    font-family: 'Pretendard-Regular';
+    src: url('https://fastly.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.woff') format('woff');
+    font-weight: 400;
+    font-style: normal;
+}
 body {
-	font-family: 'Noto Sans KR', sans-serif;
+    font-family: 'Pretendard-Regular';
 }
 #top{
     display: flex;
@@ -48,6 +54,7 @@ body {
     background-color: #FFFFFF;
     border:0px;
     font-size: 23px;
+    font-family: 'Pretendard-Regular';
 }
 #keyword_container{
     margin-left: auto;
@@ -60,16 +67,17 @@ body {
 }
 #keyword{
     border-radius: 50px;
-    width: 270px;
-    height: 40px;
-    font-size: 20px;
-    padding-left: 16px;
+    width: 278px;
+    height: 44px;
+    font-size: 22px;
+    padding-left: 20px;
 }
 input::placeholder {
     display: flex;
     align-items: center;
     font-size: 20px;
     padding-left: 10px;
+    font-family: 'Pretendard-Regular';
 }
 #search_img{
     width:44px;
@@ -83,7 +91,7 @@ form{
 }
 
 
-/*사진 디테일 페이지*/
+/*사진 수정 페이지*/
 
 #photo_container{
     grid-row : 2/4;
@@ -96,6 +104,13 @@ form{
     flex-direction: column;
 }
 .addImage {
+    width: 784px;
+    height: 895px;
+    background-color: lightgray;
+    overflow: hidden;
+    margin: 0px 10px 10px 0px;
+}
+.image-show{
     width: 784px;
     height: 895px;
     background-color: lightgray;
@@ -127,8 +142,19 @@ form{
     top: 100px;
     left : 0;
     font-size: 50px;
-    font-weight: 600;
+    font-weight: 650;
 }
+
+.line{
+    position: absolute;
+    top: 210px;
+    left: 0;
+    content: "";
+    background-color: #272424;
+    height: 1px;
+    width: 500px;
+}
+
 
 .input_text{
     margin: 20px;
@@ -153,16 +179,23 @@ form{
     width: 100%;
 }
 
-#key, #des {
-    margin: 30px;   
+#key{
+    margin: 20px;
     width: 450px;
     height: 127px;
     font-size: 18px;
-    border-radius: 25px;
+}
+
+#des{
+    margin: 20px;
+    width: 450px;
+    height: 127px;
+    font-size: 18px;
 }
 
 input::placeholder {
     font-size: 15px;
+    font-family: 'Pretendard-Regular';
 }
 
 .button-container {
@@ -172,12 +205,22 @@ input::placeholder {
     margin-top: 50px;
 }
 
+.delete_btn {
+    margin-left: 4px;
+    background-color: transparent;
+    color: #272424;
+    border: none;
+    cursor: pointer;
+    font-size: 17px;
+}
+
+
 .upload_btn {
     display: block;
     position: absolute;
     top: 800px;
     right : 300px;
-    font-size: 18px;
+    font-size: 20px;
     background-color: black;
     color: white;
     text-align: center;
@@ -185,4 +228,6 @@ input::placeholder {
     border: 0;
     width: 80px;
     height: 40px;
+    font-family: 'Pretendard-Regular';
 }
+

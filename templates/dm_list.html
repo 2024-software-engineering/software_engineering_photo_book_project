@@ -1,28 +1,26 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <link rel="stylesheet" href="../static/mainpage.css" />
+        <link rel="stylesheet" href="../static/dm_list.css" />
     </head>
     <body>
-        <!-- <script src="../static/login_page.js"></script> -->
         <div id = 'top'>ENJOY YOUR PHOTO BOOK</div>
         <div id="container">
             <div id = 'sidebar_container'>
                 <div class="sidebar_btn_container"><button class='sidebar_btn' onclick="location.href='{{ url_for('mainpage') }}'">Photo</button></div>                
-                <div class="sidebar_btn_container"><button class='sidebar_btn' onclick="location.href='{{ url_for('upload_page') }}'">Upload</button></div>
+                <div class="sidebar_btn_container"><button class='sidebar_btn' onclick="location.href='{{ url_for('photo_upload') }}'">Upload</button></div>
                 <div class="sidebar_btn_container"><button class='sidebar_btn' onclick="location.href='{{ url_for('dm_list') }}'">DM</button></div>
                 <div id ='connecting_user_container'>
-                    <div class="userlist">connecting</div>
-                    <div class="userlist">user1</div>
-                    <div class="userlist">user1</div>
-                    <div class="userlist">user1</div>
-                    <div class="userlist">user1</div>
+                    <div class="userlist">[ User List ]</div>
+                    {% for signupuser in signupuserlist%}
+                    <div class="userlist">{{signupuser[0]}}</div>
+                    {% endfor %}
                 </div>
                 <div id="logout">
-                    <button id="logout_btn">logout</button>
+                    <button id="logout_btn" onclick="location.href='{{ url_for('loginpage') }}'">logout</button>
                 </div>
             </div>
-            <div id = 'main_login_container'>
+            <div id = 'dm_list_container'>
                 <div id="camera_img_container">
                     <img id = 'camera_img' src="{{ url_for('static', filename='assets/camera.png') }}">
                 </div>
@@ -32,6 +30,30 @@
                         <button id="search_btn"><img id='search_img' src="{{ url_for('static', filename='assets/search.png') }}"></button>
                     </form>
                 </div>
+                {% for item in lists %}
+                <div class="user_msg_container">
+                    <a href="{{ url_for('photo_detail', item_id=item['photo_ID']) }}" class="item_link">
+                        <div class ='item'>
+                            <img class='photo_img' src="{{ url_for('static', filename=item['photo_img']) }}">
+                            <div class="text_content">
+                                <p class="author"> {{ item['user_nickname'] }} </p>
+                                <p class="text">이 게시물에 추가된 최신 메시지</p>
+                                <div class="other_user_container">
+                                    {% if item['dm_info'] %}
+                                        {% set dm_parts = item['dm_info'].split(':') %}
+                                        <p class="other_user"> [ {{ dm_parts[0] }} ] </p>
+                                        <p class="other_user_dm"> {{ dm_parts[1] }} </p>
+                                    {% else %}
+                                        <p class="text"> DM 정보가 없습니다. </p>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+                {% endfor %}
+                
+                   
             </div>
         </div>
         
